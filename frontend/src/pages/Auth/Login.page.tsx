@@ -1,9 +1,193 @@
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm, type RefCallBack } from "react-hook-form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card.tsx";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import { Link, useSearchParams } from "react-router";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group.tsx";
+import { MdEmail } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
+import { useEffect, useState } from "react";
+
+const formSchema = z.object({
+  email: z.email({ message: i18n.t("pages.login.errors.email") }),
+  pseudo: z
+    .string()
+    .min(3, i18n.t("pages.login.errors.pseudo.min"))
+    .max(20, i18n.t("pages.login.errors.pseudo.max")),
+  password: z
+    .string()
+    .min(6, i18n.t("pages.login.errors.password.min"))
+    .max(100, i18n.t("pages.login.errors.password.max")),
+});
+
 const LoginPage = () => {
-    return (
-        <div className={"ng-red-500"}>
-            Login Page
-        </div>
-    );
+  const { t } = useTranslation();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log(data);
+  };
+
+  const handleSocialLogin = (social: string) => {
+    console.log(`Social login with ${social}`);
+    window.location.href = `${import.meta.env.VITE_API_URL}/${social}/redirect`;
+  };
+
+  const handleShowPassword = () => {
+    setShowPassword((prevstate) => !prevstate);
+  };
+
+  useEffect(() => {
+    if (searchParams.get("error")) {
+      setError(searchParams.get("error") as string);
+    }
+  }, [searchParams]);
+
+  return (
+    <div className={"h-screen flex items-center justify-center"}>
+      <Card className={"w-full sm:max-w-md"}>
+        <CardHeader className={"text-center"}>
+          <CardTitle>TaskFlow</CardTitle>
+          <CardDescription>{t("slogan")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form id={"form-login"} onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup>
+              <Controller
+                name={"email"}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={"form-login-email"}>
+                      {t("pages.login.email")}
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        placeholder={"ex: exemple@gmail.com"}
+                        autoComplete={"off"}
+                        aria-invalid={fieldState.invalid}
+                        id={"form-login-email"}
+                      />
+                      <InputGroupAddon>
+                        <MdEmail />
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name={"password"}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={"form-login-password"}>
+                      {t("pages.login.password")}
+                    </FieldLabel>
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        placeholder={"***********"}
+                        autoComplete={"off"}
+                        aria-invalid={fieldState.invalid}
+                        id={"form-login-password"}
+                      />
+                      <InputGroupAddon>
+                        <RiLockPasswordFill />
+                      </InputGroupAddon>
+                      <InputGroupAddon
+                        align={"inline-end"}
+                        onClick={handleShowPassword}
+                        className="cursor-pointer hover:scale-110 transition-transform ease-in-out"
+                      >
+                        {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </form>
+        </CardContent>
+        <CardFooter className={"flex flex-col gap-2"}>
+          {error && (
+            <Field>
+              <p className="text-red-500">{error}</p>
+            </Field>
+          )}
+          <Field>
+            <Button type={"submit"} form={"form-login"}>
+              {t("pages.login.confirm")}
+            </Button>
+          </Field>
+          <FieldGroup className={"flex flex-row"}>
+            <Field>
+              <Button
+                type={"button"}
+                onClick={() => handleSocialLogin("github")}
+              >
+                <FaGithub />
+                Github
+              </Button>
+            </Field>
+            <Field>
+              <Button
+                type={"button"}
+                onClick={() => handleSocialLogin("google")}
+              >
+                <FaGoogle />
+                Google
+              </Button>
+            </Field>
+          </FieldGroup>
+          <Field className={"text-center"}>
+            <Link to="/auth/register">{t("pages.login.notAccount")}</Link>
+          </Field>
+        </CardFooter>
+      </Card>
+    </div>
+  );
 };
 
 export default LoginPage;

@@ -21,6 +21,19 @@ export default {
           hasAccount: "Already have an account? Log in",
           confirm: "Sign up",
         },
+        login: {
+          email: "Email",
+          password: "Password",
+          errors: {
+            email: "Invalid email address",
+            password: {
+              min: "Your password must be at least 8 characters long",
+              max: "Your password must be at most 100 characters long",
+            },
+          },
+          notAccount: "Don't have an account? Sign up",
+          confirm: "Log in",
+        },
       },
     },
   },
@@ -45,6 +58,19 @@ export default {
           },
           hasAccount: "Déjà un compte ? Connectez-vous",
           confirm: "S'inscrire",
+        },
+        login: {
+          email: "Email",
+          password: "Mot de passe",
+          errors: {
+            email: "Votre email est invalide",
+            password: {
+              min: "Votre mot de passe doit contenir au moins 6 caractères",
+              max: "Votre mot de passe doit contenir au plus 100 caractères",
+            },
+          },
+          notAccount: "Vous n'avez pas de compte ? Inscrivez-vous",
+          confirm: "Se connecter",
         },
       },
     },

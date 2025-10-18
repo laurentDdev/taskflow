@@ -16,7 +16,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router";
 import {
   InputGroup,
@@ -28,7 +27,8 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash, FaUser } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import authApi from "@/apis/auth.api";
 
 const formSchema = z.object({
   email: z.email({ message: i18n.t("pages.register.errors.email") }),
@@ -56,8 +56,12 @@ const RegisterPage = () => {
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const registerUser = await authApi.registerUser(
+      data.email,
+      data.pseudo,
+      data.password,
+    );
   };
 
   const handleShowPassword = () => {
@@ -148,7 +152,7 @@ const RegisterPage = () => {
                       <InputGroupAddon
                         align={"inline-end"}
                         onClick={handleShowPassword}
-                        className="cursor-pointer hover:scale-110 transition-transform ease-in-out "
+                        className="cursor-pointer hover:scale-110 transition-transform ease-in-out"
                       >
                         {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                       </InputGroupAddon>
@@ -168,22 +172,8 @@ const RegisterPage = () => {
               {t("pages.register.confirm")}
             </Button>
           </Field>
-          <FieldGroup className={"flex flex-row"}>
-            <Field>
-              <Button type={"submit"}>
-                <FaGithub />
-                Github
-              </Button>
-            </Field>
-            <Field>
-              <Button type={"submit"}>
-                <FaGoogle />
-                Google
-              </Button>
-            </Field>
-          </FieldGroup>
           <Field className={"text-center"}>
-            <Link to="/auth/login">{t("pages.register.hasAccount")}</Link>
+            <Link to="/auth">{t("pages.register.hasAccount")}</Link>
           </Field>
         </CardFooter>
       </Card>
