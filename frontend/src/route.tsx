@@ -1,10 +1,15 @@
 import { createBrowserRouter } from "react-router";
 import App from "@/App.tsx";
-import LoginPage from "@/pages/Auth/Login.page.tsx";
-import RegisterPage from "@/pages/Auth/Register.page.tsx";
+
 import { rootLoader } from "./loaders/rootLoader";
-import ForgotPassword from "./pages/Auth/Forgot-passwod.page";
-import ResetPassword from "./pages/Auth/Reset-password.page";
+import { lazy } from "react";
+
+const LoginPage = lazy(() => import("./pages/Auth/Login.page.tsx"));
+const RegisterPage = lazy(() => import("./pages/Auth/Register.page.tsx"));
+const ForgotPassword = lazy(() => import("./pages/Auth/Forgot-passwod.page"));
+const ResetPassword = lazy(() => import("./pages/Auth/Reset-password.page"));
+
+const Home = lazy(() => import("./pages/Home/Home.page.tsx"));
 
 const router = createBrowserRouter([
   {
@@ -12,6 +17,10 @@ const router = createBrowserRouter([
     element: <App />,
     loader: rootLoader,
     children: [
+      {
+        index: true,
+        element: <Home />,
+      },
       {
         path: "auth",
         children: [
