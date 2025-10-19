@@ -47,6 +47,7 @@ export default {
           confirm: "Reset password",
           success: "Password reset successfully",
           error: "token expired",
+          backToLogin: "Back to login",
         },
         forgotPassword: {
           email: "Email",
@@ -108,6 +109,7 @@ export default {
           confirm: "Réinitialiser le mot de passe",
           success: "Mot de passe réinitialisé avec succès",
           error: "token expiré",
+          backToLogin: "Retour à la connexion",
         },
         forgotPassword: {
           email: "Email",
