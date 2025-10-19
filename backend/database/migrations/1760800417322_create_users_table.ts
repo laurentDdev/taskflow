@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.string('password').notNullable()
       table.string('avatar').nullable()
       table.string('role').defaultTo('user')
+      table.string('reset_token').nullable()
       table.string('provider_auth').nullable()
       table.string('github_id').unique().nullable()
       table.string('google_id').unique().nullable()

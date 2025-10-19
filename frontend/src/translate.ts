@@ -1,5 +1,3 @@
-import type ForgotPassword from "./pages/Auth/Forgot-passwod.page";
-
 export default {
   en: {
     translation: {
@@ -37,6 +35,19 @@ export default {
           forgotPassword: "Forgot password ?",
           confirm: "Log in",
         },
+        resetPassword: {
+          title: "Reset Password",
+          email: "Email",
+          errors: {
+            password: {
+              min: "Your password must be at least 6 characters long",
+              max: "Your password must be at most 100 characters long",
+            },
+          },
+          confirm: "Reset password",
+          success: "Password reset successfully",
+          error: "token expired",
+        },
         forgotPassword: {
           email: "Email",
           title: "Forgot Password",
@@ -44,6 +55,7 @@ export default {
             email: "Invalid email address",
           },
           confirm: "Send reset link",
+          success: "Reset link sent successfully",
         },
       },
     },
@@ -84,13 +96,27 @@ export default {
           forgotPassword: "Mot de passe oublié ?",
           confirm: "Se connecter",
         },
-        ForgotPassword: {
+        resetPassword: {
+          email: "Email",
+          title: "Réinitialiser le mot de passe",
+          errors: {
+            password: {
+              min: "Votre mot de passe doit contenir au moins 6 caractères",
+              max: "Votre mot de passe doit contenir au plus 100 caractères",
+            },
+          },
+          confirm: "Réinitialiser le mot de passe",
+          success: "Mot de passe réinitialisé avec succès",
+          error: "token expiré",
+        },
+        forgotPassword: {
           email: "Email",
           title: "Mot de passe oublié",
           errors: {
             email: "Adresse email invalide",
           },
           confirm: "Envoyer le lien de réinitialisation",
+          success: "Lien de réinitialisation envoyé avec succès",
         },
       },
     },

@@ -1,11 +1,70 @@
 import User from '#models/user'
 import env from '#start/env'
-
+import mail from '@adonisjs/mail/services/main'
 import { HttpContext } from '@adonisjs/core/http'
 import { v4 as uuidv4 } from 'uuid'
+import { DateTime } from 'luxon'
 
 export default class AuthController {
-  private FRONT_URL = env.get('FRONT_URL')
+  private FRONT_URL: string = env.get('FRONT_URL') as string
+
+  async forgotPassword({ request, response }: HttpContext) {
+    try {
+      const { email } = request.body()
+      const user = await User.findBy('email', email)
+      const token = uuidv4()
+
+      if (user) {
+        user.reset_token = token
+        user.reset_token_expires_at = DateTime.now().plus({ minutes: 15 })
+        await user.save()
+      }
+
+      await mail.send((message) => {
+        message
+          .to(email)
+          .subject('Reset Password')
+          .text(
+            `Hello,\n\nYou have requested to reset your password. Please click on the following link to reset your password:\n\n${this.FRONT_URL}/auth/reset-password/${token}\n\nThis link will expire in 15 minutes.\n\nIf you did not request a password reset, please ignore this email.\n\nBest regards,\nYour App Team`
+          )
+      })
+
+      return response.json({
+        message: 'If an account with this email exists, a password reset email has been sent.',
+      })
+    } catch (error) {
+      console.error(error)
+      return response.json({
+        message: 'If an account with this email exists, a password reset email has been sent.',
+      })
+    }
+  }
+
+  async resetPassword({ request, response, params }: HttpContext) {
+    try {
+      const { password } = request.body()
+      const { token } = params
+
+      const user = await User.query()
+        .where('reset_token', token)
+        .where('reset_token_expires_at', '>', DateTime.now().toSQL())
+        .first()
+
+      if (!user) {
+        return response.badRequest({ error: 'Invalid or expired token' })
+      }
+
+      user.password = password
+      user.reset_token = null
+      user.reset_token_expires_at = null
+      await user.save()
+
+      return response.ok({ message: 'Password has been reset successfully.' })
+    } catch (error) {
+      console.error('Error resetting password:', error)
+      return response.internalServerError({ error: 'Internal server error' })
+    }
+  }
 
   async githubRedirect({ ally }: HttpContext) {
     const github = ally.use('github')
@@ -108,7 +167,7 @@ export default class AuthController {
 
       const token = await auth.use('api').createToken(user, ['server:create', 'server:read'], {
         name: `${user.username}_social_login_${Date.now()}`,
-        expiresIn: '7 days', // Définir l'expiration
+        expiresIn: '7 days',
       })
 
       response.cookie('access_token', token.value?.release(), {
@@ -116,13 +175,12 @@ export default class AuthController {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // Ex: 7 jours
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
 
       return response.redirect(this.FRONT_URL || 'http://localhost:5173')
     } catch (error) {
       console.error('Erreur lors de la connexion sociale:', error.message)
-      // Redirection vers une page d'erreur générique
       return response.redirect(`${this.FRONT_URL}/auth?error=internal_server_error`)
     }
   }
@@ -163,7 +221,7 @@ export default class AuthController {
 
       const token = await auth.use('api').createToken(user, ['server:create', 'server:read'], {
         name: `${user.username}_login_${Date.now()}`,
-        expiresIn: '7 days', // Définir l'expiration
+        expiresIn: '7 days',
       })
 
       response.cookie('access_token', token.value?.release(), {
@@ -171,7 +229,7 @@ export default class AuthController {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // Ex: 7 jours
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
 
       return response.json({
@@ -208,7 +266,7 @@ export default class AuthController {
 
       const token = await auth.use('api').createToken(newUser, ['server:create', 'server:read'], {
         name: `${newUser.username}_login_${Date.now()}`,
-        expiresIn: '7 days', // Définir l'expiration
+        expiresIn: '7 days',
       })
 
       response.cookie('access_token', token.value?.release(), {
@@ -216,7 +274,7 @@ export default class AuthController {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // Ex: 7 jours
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
 
       return response.json({

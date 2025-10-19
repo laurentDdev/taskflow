@@ -3,6 +3,8 @@ import App from "@/App.tsx";
 import LoginPage from "@/pages/Auth/Login.page.tsx";
 import RegisterPage from "@/pages/Auth/Register.page.tsx";
 import { rootLoader } from "./loaders/rootLoader";
+import ForgotPassword from "./pages/Auth/Forgot-passwod.page";
+import ResetPassword from "./pages/Auth/Reset-password.page";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
           {
             path: "register",
             element: <RegisterPage />,
+          },
+          {
+            path: "forgot-password",
+            element: <ForgotPassword />,
+          },
+          {
+            path: "reset-password/:token",
+            element: <ResetPassword />,
           },
         ],
       },

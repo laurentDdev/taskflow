@@ -27,6 +27,8 @@ router
     router.get('/github/callback', '#controllers/auth_controller.githubCallback')
     router.post('/register', '#controllers/auth_controller.register')
     router.post('/login', '#controllers/auth_controller.login')
+    router.post('/forgot-password', '#controllers/auth_controller.forgotPassword')
+    router.post('/reset-password/:token', '#controllers/auth_controller.resetPassword')
     router.get('/@me', '#controllers/auth_controller.me')
   })
   .prefix('/auth')
