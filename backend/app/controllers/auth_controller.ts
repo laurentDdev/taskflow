@@ -34,7 +34,6 @@ export default class AuthController {
         auth,
       })
     } catch (error) {
-      // Gérer les erreurs (utilisateur annule la connexion, problème de réseau, etc.)
       return response.redirect(`${this.FRONT_URL}/auth?error=auth_failed`)
     }
   }

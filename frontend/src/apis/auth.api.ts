@@ -5,6 +5,7 @@ class AuthApi {
     try {
       const response = await fetch(`${this.baseUrl}/register`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -15,7 +16,29 @@ class AuthApi {
         return data;
       }
     } catch (error) {
-      throw new Error(error.response.data.message);
+      const err = error as { response: { data: { message: string } } };
+      throw new Error(err.response.data.message);
+    }
+  }
+
+  async loginUser(email: string, password: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      console.log("Data received:", data);
+      if (response.ok) {
+        return data;
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      throw new Error(err.response.data.message);
     }
   }
 }

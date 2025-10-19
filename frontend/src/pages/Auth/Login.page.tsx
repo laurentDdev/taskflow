@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm, type RefCallBack } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Card,
   CardContent,
@@ -29,13 +29,10 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/auth";
 
 const formSchema = z.object({
   email: z.email({ message: i18n.t("pages.login.errors.email") }),
-  pseudo: z
-    .string()
-    .min(3, i18n.t("pages.login.errors.pseudo.min"))
-    .max(20, i18n.t("pages.login.errors.pseudo.max")),
   password: z
     .string()
     .min(6, i18n.t("pages.login.errors.password.min"))
@@ -44,6 +41,7 @@ const formSchema = z.object({
 
 const LoginPage = () => {
   const { t } = useTranslation();
+  const { login } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,13 +51,18 @@ const LoginPage = () => {
     },
   });
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    try {
+      login(data.email, data.password);
+    } catch (error) {
+      const err = error as string;
+      setError(err);
+    }
   };
 
   const handleSocialLogin = (social: string) => {
@@ -183,6 +186,9 @@ const LoginPage = () => {
           </FieldGroup>
           <Field className={"text-center"}>
             <Link to="/auth/register">{t("pages.login.notAccount")}</Link>
+            <Link to="/auth/forgot-password">
+              {t("pages.login.forgotPassword")}
+            </Link>
           </Field>
         </CardFooter>
       </Card>

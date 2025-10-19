@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm, type RefCallBack } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Card,
   CardContent,
@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { useState } from "react";
 import authApi from "@/apis/auth.api";
+import { useAuth } from "@/contexts/auth";
 
 const formSchema = z.object({
   email: z.email({ message: i18n.t("pages.register.errors.email") }),
@@ -44,6 +45,8 @@ const formSchema = z.object({
 
 const RegisterPage = () => {
   const { t } = useTranslation();
+  const { setUser } = useAuth();
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,11 +60,17 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const registerUser = await authApi.registerUser(
-      data.email,
-      data.pseudo,
-      data.password,
-    );
+    try {
+      const registerUser = await authApi.registerUser(
+        data.email,
+        data.pseudo,
+        data.password,
+      );
+      setUser(registerUser);
+    } catch (error) {
+      const err = error as string;
+      setError(err);
+    }
   };
 
   const handleShowPassword = () => {
@@ -167,6 +176,11 @@ const RegisterPage = () => {
           </form>
         </CardContent>
         <CardFooter className={"flex flex-col gap-2"}>
+          {error && (
+            <Field>
+              <p className="text-red-500">{error}</p>
+            </Field>
+          )}
           <Field>
             <Button type={"submit"} form={"form-register"}>
               {t("pages.register.confirm")}

@@ -1,3 +1,5 @@
+import type ForgotPassword from "./pages/Auth/Forgot-passwod.page";
+
 export default {
   en: {
     translation: {
@@ -32,7 +34,16 @@ export default {
             },
           },
           notAccount: "Don't have an account? Sign up",
+          forgotPassword: "Forgot password ?",
           confirm: "Log in",
+        },
+        forgotPassword: {
+          email: "Email",
+          title: "Forgot Password",
+          errors: {
+            email: "Invalid email address",
+          },
+          confirm: "Send reset link",
         },
       },
     },
@@ -70,7 +81,16 @@ export default {
             },
           },
           notAccount: "Vous n'avez pas de compte ? Inscrivez-vous",
+          forgotPassword: "Mot de passe oublié ?",
           confirm: "Se connecter",
+        },
+        ForgotPassword: {
+          email: "Email",
+          title: "Mot de passe oublié",
+          errors: {
+            email: "Adresse email invalide",
+          },
+          confirm: "Envoyer le lien de réinitialisation",
         },
       },
     },
