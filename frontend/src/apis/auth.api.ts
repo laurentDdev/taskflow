@@ -1,6 +1,18 @@
 class AuthApi {
   private readonly baseUrl = `${import.meta.env.VITE_API_URL}/auth`;
 
+  async logoutUser() {
+    try {
+      await fetch(`${this.baseUrl}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      throw new Error(err.response.data.message);
+    }
+  }
+
   async resetPassword(token: string, password: string) {
     try {
       const response = await fetch(`${this.baseUrl}/reset-password/${token}`, {

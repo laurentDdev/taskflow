@@ -8,13 +8,15 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const data = useLoaderData() as AuthUser | null;
   const [user, setUser] = useState<AuthUser | null>(data);
   const location = useLocation();
-  console.log("user", user);
 
   const login = async (email: string, password: string) => {
-    console.log("login");
     const userData = await authApi.loginUser(email, password);
-    console.log("User ", userData);
     setUser(userData);
+  };
+
+  const logout = async () => {
+    await authApi.logoutUser();
+    setUser(null);
   };
 
   const isAuthPage = location.pathname.startsWith("/auth");
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, setUser }}>
+    <AuthContext.Provider value={{ user, login, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

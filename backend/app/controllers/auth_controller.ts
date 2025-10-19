@@ -288,4 +288,15 @@ export default class AuthController {
       return response.internalServerError({ error: 'internal_server_error' })
     }
   }
+
+  async logout({ auth, response }: HttpContext) {
+    try {
+      await auth.use('api').invalidateToken()
+
+      return response.clearCookie('access_token')
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error.message)
+      return response.internalServerError({ error: 'internal_server_error' })
+    }
+  }
 }

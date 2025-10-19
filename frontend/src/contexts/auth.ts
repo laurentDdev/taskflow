@@ -5,6 +5,7 @@ export type AuthContextType = {
   user: AuthUser | null;
   login: (email: string, password: string) => void;
   setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
+  logout: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
