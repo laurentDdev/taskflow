@@ -26,27 +26,26 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash, FaUser } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import i18n from "../../i18n";
 import { useState } from "react";
 import authApi from "@/apis/auth.api";
 import { useAuth } from "@/contexts/auth";
 
-const formSchema = z.object({
-  email: z.email({ message: i18n.t("pages.register.errors.email") }),
-  pseudo: z
-    .string()
-    .min(3, i18n.t("pages.register.errors.pseudo.min"))
-    .max(20, i18n.t("pages.register.errors.pseudo.max")),
-  password: z
-    .string()
-    .min(6, i18n.t("pages.register.errors.password.min"))
-    .max(100, i18n.t("pages.register.errors.password.max")),
-});
-
 const RegisterPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["register", "common"]);
   const { setUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
+
+  const formSchema = z.object({
+    email: z.email({ message: t("errors.email") }),
+    pseudo: z
+      .string()
+      .min(3, t("errors.pseudo.min"))
+      .max(20, t("errors.pseudo.max")),
+    password: z
+      .string()
+      .min(6, t("errors.password.min"))
+      .max(100, t("errors.password.max")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,7 +81,7 @@ const RegisterPage = () => {
       <Card className={"w-full sm:max-w-md"}>
         <CardHeader className={"text-center"}>
           <CardTitle>TaskFlow</CardTitle>
-          <CardDescription>{t("slogan")}</CardDescription>
+          <CardDescription>{t("slogan", { ns: "common" })}</CardDescription>
         </CardHeader>
         <CardContent>
           <form id={"form-register"} onSubmit={form.handleSubmit(onSubmit)}>
@@ -93,7 +92,7 @@ const RegisterPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={"form-register-email"}>
-                      {t("pages.register.email")}
+                      {t("email")}
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
@@ -119,7 +118,7 @@ const RegisterPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={"form-register-pseudo"}>
-                      {t("pages.register.pseudo")}
+                      {t("pseudo")}
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
@@ -144,7 +143,7 @@ const RegisterPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={"form-register-password"}>
-                      {t("pages.register.password")}
+                      {t("password")}
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
@@ -183,11 +182,11 @@ const RegisterPage = () => {
           )}
           <Field>
             <Button type={"submit"} form={"form-register"}>
-              {t("pages.register.confirm")}
+              {t("confirm")}
             </Button>
           </Field>
           <Field className={"text-center"}>
-            <Link to="/auth">{t("pages.register.hasAccount")}</Link>
+            <Link to="/auth">{t("hasAccount")}</Link>
           </Field>
         </CardFooter>
       </Card>

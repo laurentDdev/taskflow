@@ -23,7 +23,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import i18n from "@/i18n";
 import type { AuthUser } from "@/types/AuthUser";
 import { useTranslation } from "react-i18next";
 import {
@@ -36,6 +35,7 @@ import {
 import { FaXmark } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdSettings } from "react-icons/io";
+import CreateWorkspace from "./CreateWorkspace";
 
 type HomeNavigationProps = {
   user: AuthUser;
@@ -43,32 +43,34 @@ type HomeNavigationProps = {
 };
 
 const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation("home");
 
   const { theme, setTheme } = useTheme();
 
   return (
     <Drawer direction="left">
-      <DrawerTrigger className="p-2">
+      <DrawerTrigger className="p-5">
         <GiHamburgerMenu />
       </DrawerTrigger>
       <DrawerContent className="p-2">
-        <DrawerHeader className="text-center relative">
+        <DrawerHeader className="flex items-center relative">
           <DrawerTitle className="text-3xl">
-            {t("pages.home.title")}
-            <DrawerClose className="absolute right-0.5">
+            {t("title")}
+            <DrawerClose asChild className="absolute right-0.5">
               <Button variant="outline">
                 <FaXmark />
               </Button>
             </DrawerClose>
           </DrawerTitle>
-          <DrawerDescription>{t("pages.home.subtitle")}</DrawerDescription>
+          <DrawerDescription>{t("subtitle")}</DrawerDescription>
         </DrawerHeader>
         <DrawerFooter className="flex gap-2">
-          <Button>
-            <FaPlus />
-            {t("pages.home.newWorkspaces")}
-          </Button>
+          <CreateWorkspace>
+            <Button className="w-full hover:scale-[101%] transition-transform duration-500">
+              <FaPlus />
+              {t("newWorkspaces")}
+            </Button>
+          </CreateWorkspace>
           <div className="flex items-center justify-between  p-1 hover:bg-gray-500/20 duration-500 rounded-xl cursor-pointer">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -90,7 +92,7 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="cursor-pointer">
                     <FaFlag />
-                    {t("pages.home.language")}
+                    {t("language")}
                   </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
@@ -117,7 +119,7 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="cursor-pointer">
                     <FaLightbulb />
-                    {t("pages.home.theme")}
+                    {t("theme")}
                   </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
@@ -150,11 +152,11 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
 
                 <DropdownMenuItem className="cursor-pointer">
                   <FaUser />
-                  {t("pages.home.profile")}
+                  {t("profile")}
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer" onClick={logout}>
                   <FaSignOutAlt />
-                  {t("pages.home.signOut")}
+                  {t("signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

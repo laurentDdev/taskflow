@@ -3,6 +3,7 @@ import App from "@/App.tsx";
 
 import { rootLoader } from "./loaders/rootLoader";
 import { lazy } from "react";
+import { homeLoader } from "./loaders/homeLoader.ts";
 
 const LoginPage = lazy(() => import("./pages/Auth/Login.page.tsx"));
 const RegisterPage = lazy(() => import("./pages/Auth/Register.page.tsx"));
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        loader: homeLoader,
         element: <Home />,
       },
       {

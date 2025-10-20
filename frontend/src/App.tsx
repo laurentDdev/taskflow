@@ -1,10 +1,18 @@
 import { ThemeProvider } from "@/components/theme-provider.tsx";
 import { Outlet } from "react-router";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import Loading from "./pages/Loading.page";
+import useWSStore from "./stores/ws.store";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
+  const { setGlobalSubscription } = useWSStore();
+
+  useEffect(() => {
+    setGlobalSubscription();
+  }, [setGlobalSubscription]);
+
   return (
     <ThemeProvider defaultTheme={"light"}>
       <AuthProvider>
@@ -14,6 +22,7 @@ function App() {
           </Suspense>
         </div>
       </AuthProvider>
+      <Toaster />
     </ThemeProvider>
   );
 }

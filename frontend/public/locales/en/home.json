@@ -1,0 +1,37 @@
+{
+  "title": "TaskFlow",
+  "subtitle": "Organize your ideas, structure your day",
+  "newWorkspaces": "Create a new workspace",
+  "newWorkspaceDescription": "Create a new workspace to organize your projects.",
+  "signOut": "Sign out",
+  "profile": "My Profile",
+  "theme": "Theme",
+  "language": "Language",
+  "createWorkspace": {
+    "form": {
+      "name": {
+        "label": "Name of the workspace",
+        "placeholder": "Ex: Project of the team for the year"
+      },
+      "description": {
+        "label": "Description of the workspace",
+        "placeholder": "Ex: Project description"
+      },
+      "submit": "Create the new workspace",
+      "success": "Workspace created successfully"
+    },
+    "errors": {
+      "name": {
+        "required": "The name of the workspace is required.",
+        "min": "The name of the workspace must contain at least 2 characters.",
+        "max": "The name of the workspace must contain at most 100 characters."
+      },
+      "description": {
+        "min": "The description of the workspace must contain at least 2 characters.",
+        "max": "The description of the workspace must contain at most 100 characters."
+      }
+    }
+  },
+  "myWorkspaces": "My Workspaces",
+  "search": "Search"
+}

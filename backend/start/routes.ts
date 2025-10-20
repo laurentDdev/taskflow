@@ -8,6 +8,8 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import './socket.js'
+import { middleware } from './kernel.js'
 
 router.use([() => import('#middleware/token_from_cookie_middleware')])
 
@@ -18,7 +20,6 @@ router.get('/', async () => {
 })
 
 router.get('/github/redirect', '#controllers/auth_controller.githubRedirect')
-
 router.get('/google/redirect', '#controllers/auth_controller.googleRedirect')
 
 router
@@ -33,3 +34,6 @@ router
     router.get('/@me', '#controllers/auth_controller.me')
   })
   .prefix('/auth')
+
+router.post('/workspace', '#controllers/workspaces_controller.create').middleware(middleware.auth())
+router.get('/workspace', '#controllers/workspaces_controller.getAll').middleware(middleware.auth())

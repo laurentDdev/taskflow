@@ -1,4 +1,4 @@
-import authApi from "@/apis/auth.api";
+import authApi, { clearUserCache } from "@/apis/auth.api";
 import type { AuthUser } from "@/types/AuthUser";
 import { useState, type PropsWithChildren } from "react";
 import { Navigate, useLoaderData, useLocation } from "react-router";
@@ -10,12 +10,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const location = useLocation();
 
   const login = async (email: string, password: string) => {
+    clearUserCache();
     const userData = await authApi.loginUser(email, password);
     setUser(userData);
   };
 
   const logout = async () => {
     await authApi.logoutUser();
+    clearUserCache();
     setUser(null);
   };
 

@@ -27,21 +27,20 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import i18n from "../../i18n";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/auth";
 
-const formSchema = z.object({
-  email: z.email({ message: i18n.t("pages.login.errors.email") }),
-  password: z
-    .string()
-    .min(6, i18n.t("pages.login.errors.password.min"))
-    .max(100, i18n.t("pages.login.errors.password.max")),
-});
-
 const LoginPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["login", "common"]);
   const { login } = useAuth();
+
+  const formSchema = z.object({
+    email: z.email({ message: t("errors.email") }),
+    password: z
+      .string()
+      .min(6, t("errors.password.min"))
+      .max(100, t("errors.password.max")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,7 +84,7 @@ const LoginPage = () => {
       <Card className={"w-full sm:max-w-md"}>
         <CardHeader className={"text-center"}>
           <CardTitle>TaskFlow</CardTitle>
-          <CardDescription>{t("slogan")}</CardDescription>
+          <CardDescription>{t("slogan", { ns: "common" })}</CardDescription>
         </CardHeader>
         <CardContent>
           <form id={"form-login"} onSubmit={form.handleSubmit(onSubmit)}>
@@ -96,7 +95,7 @@ const LoginPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={"form-login-email"}>
-                      {t("pages.login.email")}
+                      {t("email")}
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
@@ -122,7 +121,7 @@ const LoginPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={"form-login-password"}>
-                      {t("pages.login.password")}
+                      {t("password")}
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
@@ -161,7 +160,7 @@ const LoginPage = () => {
           )}
           <Field>
             <Button type={"submit"} form={"form-login"}>
-              {t("pages.login.confirm")}
+              {t("confirm")}
             </Button>
           </Field>
           <FieldGroup className={"flex flex-row"}>
@@ -185,10 +184,8 @@ const LoginPage = () => {
             </Field>
           </FieldGroup>
           <Field className={"text-center"}>
-            <Link to="/auth/register">{t("pages.login.notAccount")}</Link>
-            <Link to="/auth/forgot-password">
-              {t("pages.login.forgotPassword")}
-            </Link>
+            <Link to="/auth/register">{t("notAccount")}</Link>
+            <Link to="/auth/forgot-password">{t("forgotPassword")}</Link>
           </Field>
         </CardFooter>
       </Card>
