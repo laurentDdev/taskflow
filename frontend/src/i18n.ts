@@ -15,6 +15,7 @@ i18n
       "register",
       "forgotPassword",
       "resetPassword",
+      "workspace",
     ],
     defaultNS: "common",
     backend: {

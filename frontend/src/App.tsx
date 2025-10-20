@@ -7,11 +7,15 @@ import useWSStore from "./stores/ws.store";
 import { Toaster } from "./components/ui/sonner";
 
 function App() {
-  const { setGlobalSubscription } = useWSStore();
+  const { setGlobalSubscription, deleteGlobalSubscription } = useWSStore();
 
   useEffect(() => {
     setGlobalSubscription();
-  }, [setGlobalSubscription]);
+
+    return () => {
+      deleteGlobalSubscription();
+    };
+  }, [setGlobalSubscription, deleteGlobalSubscription]);
 
   return (
     <ThemeProvider defaultTheme={"light"}>

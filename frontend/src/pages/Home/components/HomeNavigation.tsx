@@ -31,11 +31,14 @@ import {
   FaPlus,
   FaSignOutAlt,
   FaUser,
+  FaFolder,
 } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdSettings } from "react-icons/io";
 import CreateWorkspace from "./CreateWorkspace";
+import useWorkspaceStore from "@/stores/workspace.store";
+import WorkspaceListNavigation from "./WorkspaceListNavigation";
 
 type HomeNavigationProps = {
   user: AuthUser;
@@ -44,6 +47,7 @@ type HomeNavigationProps = {
 
 const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
   const { t, i18n } = useTranslation("home");
+  const { workspaces } = useWorkspaceStore();
 
   const { theme, setTheme } = useTheme();
 
@@ -52,7 +56,7 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
       <DrawerTrigger className="p-5">
         <GiHamburgerMenu />
       </DrawerTrigger>
-      <DrawerContent className="p-2">
+      <DrawerContent className="p-2 flex flex-col gap-5">
         <DrawerHeader className="flex items-center relative">
           <DrawerTitle className="text-3xl">
             {t("title")}
@@ -64,6 +68,11 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
           </DrawerTitle>
           <DrawerDescription>{t("subtitle")}</DrawerDescription>
         </DrawerHeader>
+        <div className="h-full flex flex-col gap-2 p-2">
+          <h2 className="text-xl mb-5">{t("myWorkspaces")}</h2>
+
+          <WorkspaceListNavigation workspaces={workspaces} />
+        </div>
         <DrawerFooter className="flex gap-2">
           <CreateWorkspace>
             <Button className="w-full hover:scale-[101%] transition-transform duration-500">

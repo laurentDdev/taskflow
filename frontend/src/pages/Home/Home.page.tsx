@@ -16,7 +16,7 @@ const Home = () => {
 
   useEffect(() => {
     setWorkspaces(data.workspaces);
-  }, [data]);
+  }, [data, setWorkspaces]);
 
   return (
     <div className="h-screen flex flex-col">

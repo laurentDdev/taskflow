@@ -9,6 +9,7 @@ type State = {
 
 type Action = {
   setGlobalSubscription: () => Promise<void>;
+  deleteGlobalSubscription: () => void;
 };
 
 const useWSStore = create<State & Action>((set) => ({
@@ -19,6 +20,16 @@ const useWSStore = create<State & Action>((set) => ({
     await globalSubscription.create();
     set({ globalSubscription });
   },
+  deleteGlobalSubscription: () =>
+    set((state) => {
+      if (state.globalSubscription) {
+        state.globalSubscription.delete();
+      }
+      return {
+        ...state,
+        globalSubscription: null,
+      };
+    }),
 }));
 
 export default useWSStore;

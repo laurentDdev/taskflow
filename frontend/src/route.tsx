@@ -11,6 +11,7 @@ const ForgotPassword = lazy(() => import("./pages/Auth/Forgot-passwod.page"));
 const ResetPassword = lazy(() => import("./pages/Auth/Reset-password.page"));
 
 const Home = lazy(() => import("./pages/Home/Home.page.tsx"));
+const Workspace = lazy(() => import("./pages/Workspace/Workspace.tsx"));
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         index: true,
         loader: homeLoader,
         element: <Home />,
+      },
+      {
+        path: "workspace/:id",
+        element: <Workspace />,
       },
       {
         path: "auth",
