@@ -41,7 +41,7 @@ import useWorkspaceStore from "@/stores/workspace.store";
 import WorkspaceListNavigation from "./WorkspaceListNavigation";
 
 type HomeNavigationProps = {
-  user: AuthUser;
+  user: AuthUser | null;
   logout: () => void;
 };
 
@@ -85,13 +85,13 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
                 <div className="flex gap-1 items-center">
                   <Avatar>
-                    <AvatarImage src={user?.avatar} />
+                    <AvatarImage src={user!.image!} />
                     <AvatarFallback>
-                      {user?.username || "Profile picture"}
+                      {user?.name || "Profile picture"}
                     </AvatarFallback>
                   </Avatar>
                   <h3 className="text-lg font-semibold">
-                    {user?.username || "Profile picture"}
+                    {user?.name || "Profile picture"}
                   </h3>
                 </div>
                 <IoMdSettings />
@@ -163,7 +163,10 @@ const HomeNavigation = ({ user, logout }: HomeNavigationProps) => {
                   <FaUser />
                   {t("profile")}
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={async () => await logout()}
+                >
                   <FaSignOutAlt />
                   {t("signOut")}
                 </DropdownMenuItem>

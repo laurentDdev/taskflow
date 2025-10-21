@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router";
 import App from "@/App.tsx";
 
-import { rootLoader } from "./loaders/rootLoader";
 import { lazy } from "react";
 import { homeLoader } from "./loaders/homeLoader.ts";
+import { workspaceLoader } from "./loaders/workspaceLoader.ts";
 
 const LoginPage = lazy(() => import("./pages/Auth/Login.page.tsx"));
 const RegisterPage = lazy(() => import("./pages/Auth/Register.page.tsx"));
@@ -17,7 +17,6 @@ const router = createBrowserRouter([
   {
     path: "",
     element: <App />,
-    loader: rootLoader,
     children: [
       {
         index: true,
@@ -26,6 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "workspace/:id",
+        loader: workspaceLoader,
         element: <Workspace />,
       },
       {

@@ -21,24 +21,22 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import authApi from "@/apis/auth.api";
-
-const formSchema = z.object({
-  password: z
-    .string()
-    .min(6, i18n.t("pages.resetPassword.errors.password.min"))
-    .max(100, i18n.t("pages.resetPassword.errors.password.max")),
-});
+import { resetPassword } from "@/lib/auth-client";
 
 const ResetPassword = () => {
   const { token } = useParams();
-  const { t } = useTranslation();
+  const { t } = useTranslation("resetPassword");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
 
-  console.log("Token:", token);
+  const formSchema = z.object({
+    password: z
+      .string()
+      .min(6, i18n.t("errors.password.min"))
+      .max(100, i18n.t("errors.password.max")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,20 +58,35 @@ const ResetPassword = () => {
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      const response = await authApi.resetPassword(token, data.password);
-      if (response.message) {
-        setSuccess(true);
-        setError(false);
-        setTimeout(() => {
-          navigate("/auth");
-        }, 2000);
-      }
-    } catch (error) {
-      if (error) {
-        setError(true);
-        setSuccess(false);
-      }
+    // try {
+    //   const response = await authApi.resetPassword(token, data.password);
+    //   if (response.message) {
+    //     setSuccess(true);
+    //     setError(false);
+    //     setTimeout(() => {
+    //       navigate("/auth");
+    //     }, 2000);
+    //   }
+    // } catch (error) {
+    //   if (error) {
+    //     setError(true);
+    //     setSuccess(false);
+    //   }
+    // }
+
+    const { error } = await resetPassword({
+      newPassword: data.password,
+      token,
+    });
+    if (error) {
+      setError(true);
+      setSuccess(false);
+    } else {
+      setError(false);
+      setSuccess(true);
+      setTimeout(() => {
+        navigate("/auth");
+      }, 2000);
     }
   };
 
@@ -81,7 +94,7 @@ const ResetPassword = () => {
     <div className="h-screen flex items-center justify-center">
       <Card className="w-full sm:max-w-md">
         <CardHeader className="text-center">
-          <CardTitle>{t("pages.resetPassword.title")}</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form id="form-reset-password" onSubmit={form.handleSubmit(onSubmit)}>
@@ -91,7 +104,7 @@ const ResetPassword = () => {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={"form-login-password"}>
-                    {t("pages.login.password")}
+                    {t("password")}
                   </FieldLabel>
                   <InputGroup>
                     <InputGroupInput
@@ -124,22 +137,16 @@ const ResetPassword = () => {
         <CardFooter className="flex flex-col text-center gap-2">
           <Field>
             <Button type="submit" form="form-reset-password">
-              {t("pages.resetPassword.confirm")}
+              {t("confirm")}
             </Button>
           </Field>
           <Field>
-            <Link to="/auth">{t("pages.resetPassword.backToLogin")}</Link>
+            <Link to="/auth">{t("backToLogin")}</Link>
           </Field>
           <Field>
-            {error && (
-              <FieldError
-                errors={[{ message: t("pages.resetPassword.error") }]}
-              />
-            )}
+            {error && <FieldError errors={[{ message: t("error") }]} />}
             {success && (
-              <p className="font-bold text-green-300">
-                {t("pages.resetPassword.success")}
-              </p>
+              <p className="font-bold text-[var(--success)]">{t("success")}</p>
             )}
           </Field>
         </CardFooter>

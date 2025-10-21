@@ -1,5 +1,25 @@
 {
+  "workspaceNotFound": "Le workspace n'a pas été trouvé",
+  "backToWorkspacesList": "Retour à la liste des workspaces",
   "back": "Retour",
   "addMemberButton": "Inviter un membre",
-  "settingsButton": "Paramètres"
+  "settingsButton": "Paramètres",
+  "navigations": {
+    "boards": "Tableaux",
+    "members": "Membres",
+    "settings": "Paramètres",
+    "search": "Recherche un tableau",
+    "newBoard": "Nouveau tableau"
+  },
+  "inviteMembersCard": {
+    "title": "Inviter un membre",
+    "description": "Ajoutez des membres à votre workspace pour collaborer sur des tableaux.",
+    "label": "Email",
+    "placeholder": "Ex: john.doe@example.com",
+    "generateLink": "Générer un lien d'invitation",
+    "submit": "Inviter",
+    "errors": {
+      "email": "L'email est invalide"
+    }
+  }
 }

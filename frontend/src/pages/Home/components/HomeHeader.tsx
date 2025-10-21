@@ -33,7 +33,12 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ filter, setFilter }) => {
           control={form.control}
           render={({ field }) => (
             <InputGroup>
-              <InputGroupInput {...field} placeholder={t("search")} />
+              <InputGroupInput
+                {...field}
+                placeholder={t("search")}
+                onChange={(e) => setFilter(e.target.value)}
+                value={filter}
+              />
               <InputGroupAddon align={"inline-end"}>
                 <FaSearch />
               </InputGroupAddon>

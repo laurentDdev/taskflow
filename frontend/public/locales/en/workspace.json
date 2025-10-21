@@ -1,5 +1,25 @@
 {
+  "workspaceNotFound": "The workspace was not found",
+  "backToWorkspacesList": "Back to workspaces list",
   "back": "Back",
   "addMemberButton": "Invite Member",
-  "settingsButton": "Settings"
+  "settingsButton": "Settings",
+  "navigations": {
+    "boards": "Boards",
+    "members": "Members",
+    "settings": "Settings",
+    "search": "Search a board",
+    "newBoard": "New board"
+  },
+  "inviteMembersCard": {
+    "title": "Invite Member",
+    "description": "Add members to your workspace to collaborate on boards.",
+    "label": "Email",
+    "placeholder": "Ex: john.doe@example.com",
+    "generateLink": "Generate Invitation Link",
+    "submit": "Invite",
+    "errors": {
+      "email": "The email is invalid"
+    }
+  }
 }

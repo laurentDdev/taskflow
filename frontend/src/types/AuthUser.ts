@@ -1,6 +1,9 @@
 export type AuthUser = {
-  id: number;
-  username: string;
-  avatar: string;
-  provider: string;
+  id: string;
+  email: string;
+  name: string;
+  image?: string | null;
+  emailVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };

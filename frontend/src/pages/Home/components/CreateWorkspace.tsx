@@ -148,7 +148,9 @@ const CreateWorkspace = ({ children }: CreateWorkspaceProps) => {
           </Button>
         </Field>
         {success && (
-          <p className="text-green-400">{t("createWorkspace.form.success")}</p>
+          <p className="text-[var(--success)]">
+            {t("createWorkspace.form.success")}
+          </p>
         )}
         {error && <FieldError errors={[{ message: error }]} />}
       </DialogContent>

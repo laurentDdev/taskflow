@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import * as z from "zod";
-import i18n from "../../i18n";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -18,16 +17,16 @@ import {
 } from "@/components/ui/input-group";
 import { MdEmail } from "react-icons/md";
 import { Button } from "@/components/ui/button";
-import authApi from "@/apis/auth.api";
 import { useState } from "react";
-
-const formSchema = z.object({
-  email: z.email({ message: i18n.t("pages.forgotPassword.errors.email") }),
-});
+import { requestPasswordReset } from "@/lib/auth-client";
 
 const ForgotPassword = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("forgotPassword");
   const [success, sendSuccess] = useState(false);
+
+  const formSchema = z.object({
+    email: z.email({ message: t("errors.email") }),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,20 +35,36 @@ const ForgotPassword = () => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    try {
-      const response = await authApi.sendResetPasswordEmail(data.email);
-      if (response.message) {
-        sendSuccess(true);
-        setTimeout(() => {
-          sendSuccess(false);
-          form.reset();
-        }, 5000);
-      }
-    } catch (error) {
-      console.error(error);
-      sendSuccess(false);
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+    console.log(formData);
+    // try {
+    //   const response = await authApi.sendResetPasswordEmail(data.email);
+    //   if (response.message) {
+    //     sendSuccess(true);
+    //     setTimeout(() => {
+    //       sendSuccess(false);
+    //       form.reset();
+    //     }, 5000);
+    //   }
+    // } catch (error) {
+    //   sendSuccess(true);
+    //   setTimeout(() => {
+    //     sendSuccess(false);
+    //     form.reset();
+    //   }, 5000);
+    // }
+
+    const { data, error } = await requestPasswordReset({
+      email: formData.email,
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    });
+
+    if (data) {
+      sendSuccess(true);
+      setTimeout(() => {
+        sendSuccess(false);
+        form.reset();
+      }, 5000);
     }
   };
 
@@ -57,7 +72,7 @@ const ForgotPassword = () => {
     <div className="h-screen flex items-center justify-center">
       <Card className="w-full sm:max-w-md">
         <CardHeader className="text-center">
-          <CardTitle>{t("pages.forgotPassword.title")}</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form
@@ -70,7 +85,7 @@ const ForgotPassword = () => {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="form-forgot-password-email">
-                    {t("pages.forgotPassword.email")}
+                    {t("email")}
                   </FieldLabel>
                   <InputGroup>
                     <InputGroupInput
@@ -92,12 +107,10 @@ const ForgotPassword = () => {
         <CardFooter>
           <Field>
             <Button type={"submit"} form="form-forgot-password">
-              {t("pages.forgotPassword.confirm")}
+              {t("confirm")}
             </Button>
             {success && (
-              <div className="text-green-500">
-                {t("pages.forgotPassword.success")}
-              </div>
+              <div className="text-[var(--success)]">{t("success")}</div>
             )}
           </Field>
         </CardFooter>

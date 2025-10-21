@@ -28,11 +28,10 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/auth";
+import { signIn } from "@/lib/auth-client";
 
 const LoginPage = () => {
   const { t } = useTranslation(["login", "common"]);
-  const { login } = useAuth();
 
   const formSchema = z.object({
     email: z.email({ message: t("errors.email") }),
@@ -55,18 +54,26 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    try {
-      login(data.email, data.password);
-    } catch (error) {
-      const err = error as string;
-      setError(err);
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+    const { error } = await signIn.email({
+      email: formData.email,
+      password: formData.password,
+      callbackURL: window.location.origin,
+      rememberMe: true,
+    });
+
+    if (error) {
+      setError(error.message || "An error occurred");
+      return;
     }
+    setError(null);
   };
 
-  const handleSocialLogin = (social: string) => {
-    console.log(`Social login with ${social}`);
-    window.location.href = `${import.meta.env.VITE_API_URL}/${social}/redirect`;
+  const handleSocialLogin = async (social: string) => {
+    await signIn.social({
+      provider: social,
+      callbackURL: window.location.origin,
+    });
   };
 
   const handleShowPassword = () => {
@@ -78,6 +85,10 @@ const LoginPage = () => {
       setError(searchParams.get("error") as string);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    document.body.style.pointerEvents = "auto";
+  }, []);
 
   return (
     <div className={"h-screen flex items-center justify-center"}>
@@ -155,7 +166,7 @@ const LoginPage = () => {
         <CardFooter className={"flex flex-col gap-2"}>
           {error && (
             <Field>
-              <p className="text-red-500">{error}</p>
+              <p className="text-[var(--error)]">{error}</p>
             </Field>
           )}
           <Field>

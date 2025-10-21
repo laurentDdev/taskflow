@@ -1,5 +1,5 @@
 class WorkspaceApi {
-  private readonly baseUrl = `${import.meta.env.VITE_API_URL}/workspace`;
+  private readonly baseUrl = `${import.meta.env.VITE_API_URL}/api/workspace`;
 
   async createWorkspace(name: string, description: string) {
     try {
@@ -42,6 +42,31 @@ class WorkspaceApi {
         throw error;
       }
       throw new Error("An unknown error occurred while fetching workspaces");
+    }
+  }
+
+  async getWorkspace(id: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/${id}`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+      const text = await response.text();
+      if (!text) {
+        return null;
+      }
+      const data = JSON.parse(text);
+      return data;
+    } catch (error) {
+      console.error("Error fetching workspace:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("An unknown error occurred while fetching workspace");
     }
   }
 }

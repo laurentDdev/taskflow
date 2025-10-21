@@ -27,12 +27,11 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash, FaUser } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import authApi from "@/apis/auth.api";
-import { useAuth } from "@/contexts/auth";
+import { signUp } from "@/lib/auth-client";
 
 const RegisterPage = () => {
   const { t } = useTranslation(["register", "common"]);
-  const { setUser } = useAuth();
+
   const [error, setError] = useState<string | null>(null);
 
   const formSchema = z.object({
@@ -58,17 +57,17 @@ const RegisterPage = () => {
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      const registerUser = await authApi.registerUser(
-        data.email,
-        data.pseudo,
-        data.password,
-      );
-      setUser(registerUser);
-    } catch (error) {
-      const err = error as string;
-      setError(err);
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+    const { data, error } = await signUp.email({
+      email: formData.email,
+      password: formData.password,
+      name: formData.pseudo,
+    });
+    if (!error && data && data.user) {
+      setError(null);
+    }
+    if (error) {
+      setError(error.message || "An error occurred");
     }
   };
 
@@ -177,7 +176,7 @@ const RegisterPage = () => {
         <CardFooter className={"flex flex-col gap-2"}>
           {error && (
             <Field>
-              <p className="text-red-500">{error}</p>
+              <p className="text-[var(--error)]">{error}</p>
             </Field>
           )}
           <Field>
