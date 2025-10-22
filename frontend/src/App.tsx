@@ -3,18 +3,33 @@ import { Outlet } from "react-router";
 import { Suspense, useEffect } from "react";
 import Loading from "./pages/Loading.page";
 import useWSStore from "./stores/ws.store";
-import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 function App() {
-  const { setGlobalSubscription, deleteGlobalSubscription } = useWSStore();
+  const { connect, disconnect, socket } = useWSStore();
+  const { t } = useTranslation("global");
 
   useEffect(() => {
-    setGlobalSubscription();
+    if (connect) {
+      connect();
+    }
 
     return () => {
-      deleteGlobalSubscription();
+      if (disconnect) {
+        disconnect();
+      }
     };
-  }, [setGlobalSubscription, deleteGlobalSubscription]);
+  }, [connect, disconnect]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("receivedNotification", (data) => {
+        console.log("Received notification:", data);
+        toast.info(t(data.title));
+      });
+    }
+  }, [socket, t]);
 
   return (
     <ThemeProvider defaultTheme={"light"}>
@@ -23,8 +38,6 @@ function App() {
           <Outlet />
         </Suspense>
       </div>
-
-      <Toaster />
     </ThemeProvider>
   );
 }

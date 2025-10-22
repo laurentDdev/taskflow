@@ -1,0 +1,8 @@
+{
+  "workspace": {
+    "invite": {
+      "title": "Invite to workspace",
+      "message": "You have been invited to join the workspace."
+    }
+  }
+}

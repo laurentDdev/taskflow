@@ -1,21 +1,13 @@
+import api from "@/lib/api";
+import { redirect } from "react-router";
+
 class WorkspaceApi {
-  private readonly baseUrl = `${import.meta.env.VITE_API_URL}/api/workspace`;
+  private readonly baseUrl = `/api/workspace`;
 
   async createWorkspace(name: string, description: string) {
     try {
-      const response = await fetch(`${this.baseUrl}`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, description }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to create workspace");
-      }
-      return data;
+      const data = await api.post(this.baseUrl, { name, description });
+      return data.data;
     } catch (error) {
       console.error("Error creating workspace:", error);
       if (error instanceof Error) {
@@ -27,46 +19,58 @@ class WorkspaceApi {
 
   async getWorkspaces() {
     try {
-      const response = await fetch(`${this.baseUrl}`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch workspaces");
-      }
-      return data;
+      const data = await api.get(this.baseUrl);
+
+      return data.data;
     } catch (error) {
+      const err = error as { status: number };
       console.error("Error fetching workspaces:", error);
-      if (error instanceof Error) {
-        throw error;
+
+      if (err.status === 401) {
+        return redirect("/auth");
       }
+
       throw new Error("An unknown error occurred while fetching workspaces");
     }
   }
 
   async getWorkspace(id: string) {
     try {
-      const response = await fetch(`${this.baseUrl}/${id}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        return null;
-      }
-      const text = await response.text();
-      if (!text) {
-        return null;
-      }
-      const data = JSON.parse(text);
-      return data;
+      const data = await api.get(`${this.baseUrl}/${id}`);
+      return data.data;
     } catch (error) {
       console.error("Error fetching workspace:", error);
-      if (error instanceof Error) {
-        throw error;
+      const err = error as { status: number };
+      if (err.status === 404) {
+        throw new Error("Workspace not found");
+      }
+      if (err.status === 401) {
+        return redirect("/auth");
       }
       throw new Error("An unknown error occurred while fetching workspace");
+    }
+  }
+
+  async inviteMemberToWorkspace(workspaceId: string, email: string) {
+    try {
+      await api.post(`${this.baseUrl}/${workspaceId}/invite`, { email });
+    } catch (error) {
+      console.log(error.response, "ttt");
+      const err = error as {
+        response: { data: { message: string }; status: number };
+      };
+
+      console.log("Status ", err.response.status);
+      if (err.response.status === 404) {
+        throw new Error(err.response.data.message);
+      }
+      if (err.response.status === 401) {
+        return redirect("/auth");
+      }
+
+      throw new Error(
+        "An unknown error occurred while inviting member to workspace",
+      );
     }
   }
 }

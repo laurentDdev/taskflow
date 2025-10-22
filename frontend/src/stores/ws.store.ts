@@ -1,35 +1,30 @@
-import { transmit } from "@/lib/transmit";
-import type { Subscription } from "@adonisjs/transmit-client";
 import { create } from "zustand";
+import { io, Socket } from "socket.io-client";
 
 type State = {
-  baseUrl: string;
-  globalSubscription: Subscription | null;
+  socket: Socket | null;
 };
 
 type Action = {
-  setGlobalSubscription: () => Promise<void>;
-  deleteGlobalSubscription: () => void;
+  connect: () => void;
+  disconnect: () => void;
 };
 
-const useWSStore = create<State & Action>((set) => ({
-  baseUrl: import.meta.env.VITE_API_URL as string,
-  globalSubscription: null,
-  setGlobalSubscription: async () => {
-    const globalSubscription = transmit.subscription("global");
-    await globalSubscription.create();
-    set({ globalSubscription });
+const useWSStore = create<State & Action>((set, get) => ({
+  socket: null,
+  connect: () => {
+    if (get().socket) return;
+
+    const socket = io(import.meta.env.VITE_API_URL, {
+      withCredentials: true,
+    });
+
+    set({ socket });
   },
-  deleteGlobalSubscription: () =>
-    set((state) => {
-      if (state.globalSubscription) {
-        state.globalSubscription.delete();
-      }
-      return {
-        ...state,
-        globalSubscription: null,
-      };
-    }),
+  disconnect: () => {
+    get().socket?.disconnect();
+    set({ socket: null });
+  },
 }));
 
 export default useWSStore;

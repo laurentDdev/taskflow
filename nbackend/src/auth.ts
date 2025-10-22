@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { PrismaClient } from '../generated/prisma';
 import { MailService } from './mail/mail.service';
+import { IncomingHttpHeaders } from 'http';
 
 const prisma = new PrismaClient();
 export const getBetterAuthOptions = (mailService: MailService) =>
@@ -39,3 +40,12 @@ export const getBetterAuthOptions = (mailService: MailService) =>
       },
     },
   });
+
+export const convertHeaders = (headersReceived: IncomingHttpHeaders): any => {
+  const headers: Record<string, string> = {};
+  for (const [key, value] of Object.entries(headersReceived)) {
+    if (value) {
+      headers[key] = Array.isArray(value) ? value.join(',') : value;
+    }
+  }
+};

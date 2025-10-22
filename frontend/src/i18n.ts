@@ -16,6 +16,7 @@ i18n
       "forgotPassword",
       "resetPassword",
       "workspace",
+      "global",
     ],
     defaultNS: "common",
     backend: {

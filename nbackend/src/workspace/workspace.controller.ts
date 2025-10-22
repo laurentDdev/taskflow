@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
-import { CreateWorkspaceDto } from './workspace.validator';
+import { CreateWorkspaceDto, InviteUserDto } from './workspace.validator';
 import { AuthGuard, AuthService } from '@thallesp/nestjs-better-auth';
 
 @Controller('workspace')
@@ -30,6 +30,22 @@ export class WorkspaceController {
     return this.workspaceService.createWorkspace(
       createWorkspaceDto,
       session!.user.id,
+    );
+  }
+
+  @Post(':id/invite')
+  async inviteUserToWorkspace(
+    @Body() inviteUserDto: InviteUserDto,
+    @Req() req: Request,
+    @Param('id') id: string,
+  ) {
+    const session = await this.authService.api.getSession({
+      headers: req.headers,
+    });
+    return await this.workspaceService.inviteUserToWorkspace(
+      inviteUserDto,
+      session!.user.id,
+      id,
     );
   }
 

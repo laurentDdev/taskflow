@@ -1,3 +1,4 @@
+import workspaceApi from "@/apis/workspace.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,11 +24,17 @@ import * as z from "zod";
 
 interface WorkspaceInviteMemberProps {
   children: React.ReactNode;
+  workspaceId: string;
 }
 
-const WorkspaceInviteMember = ({ children }: WorkspaceInviteMemberProps) => {
+const WorkspaceInviteMember = ({
+  children,
+  workspaceId,
+}: WorkspaceInviteMemberProps) => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation("workspace");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean | null>(null);
 
   const formSchema = z.object({
     email: z.email(t("inviteMembersCard.errors.email")),
@@ -41,7 +48,20 @@ const WorkspaceInviteMember = ({ children }: WorkspaceInviteMemberProps) => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    try {
+      await workspaceApi.inviteMemberToWorkspace(workspaceId, data.email);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        form.reset();
+      }, 3000);
+    } catch (error) {
+      const err = error as { message: string };
+      setError(err.message);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
   };
 
   return (
@@ -78,6 +98,12 @@ const WorkspaceInviteMember = ({ children }: WorkspaceInviteMemberProps) => {
                     <MdEmail />
                   </InputGroupAddon>
                 </InputGroup>
+                {success && (
+                  <div className="text-[var(--success)]">
+                    {t("inviteMembersCard.success")}
+                  </div>
+                )}
+                {error && <div className="text-[var(--error)]">{t(error)}</div>}
                 <Button>
                   <FaPlus />
                   {t("inviteMembersCard.submit")}

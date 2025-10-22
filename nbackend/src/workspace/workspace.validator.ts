@@ -11,3 +11,9 @@ export class CreateWorkspaceDto {
   @Length(2, 300)
   description: string;
 }
+
+export class InviteUserDto {
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+}

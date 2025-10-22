@@ -58,7 +58,7 @@ const WorkspaceHeader = ({
           # {workspace.name}
         </div>
         <div className="flex gap-2">
-          <WorkspaceInviteMember>
+          <WorkspaceInviteMember workspaceId={workspace.id}>
             <Button>
               <FaPlus />
               {t("addMemberButton")}

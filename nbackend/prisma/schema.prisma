@@ -15,16 +15,19 @@ datasource db {
 }
 
 model User {
-  id            String      @id
-  username      String      @db.Text
-  email         String
-  emailVerified Boolean     @default(false)
-  avatar        String?     @db.Text
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  workspaces    Workspace[]
+  id                    String            @id
+  username              String            @db.Text
+  email                 String
+  emailVerified         Boolean           @default(false)
+  avatar                String?           @db.Text
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @default(now()) @updatedAt
+  sessions              Session[]
+  accounts              Account[]
+  workspaces            Workspace[]
+  sentNotifications     Notification[]    @relation("SentNotifications")
+  receivedNotifications Notification[]    @relation("ReceivedNotifications")
+  WorkspaceInvite       WorkspaceInvite[]
 
   @@unique([email])
   @@map("user")
@@ -84,4 +87,35 @@ model Workspace {
   owner       User     @relation(fields: [owner_id], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+
+  WorkspaceInvite WorkspaceInvite[]
+}
+
+model WorkspaceInvite {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+
+  @@map("workspace_invite")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentNotifications", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User     @relation("ReceivedNotifications", fields: [receiverId], references: [id], onDelete: Cascade)
+  title      String
+  message    String
+  status     String   @default("unread")
+  directLink String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("notification")
 }

@@ -19,7 +19,10 @@
     "generateLink": "Generate Invitation Link",
     "submit": "Invite",
     "errors": {
-      "email": "The email is invalid"
-    }
+      "email": "The email is invalid",
+      "user_not_found": "The user was not found",
+      "not_owner": "You are not the owner of this workspace"
+    },
+    "success": "Member invited successfully"
   }
 }

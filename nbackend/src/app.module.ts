@@ -8,6 +8,10 @@ import { MailModule } from './mail/mail.module';
 import { MailService } from './mail/mail.service';
 import { WorkspaceController } from './workspace/workspace.controller';
 import { WorkspaceService } from './workspace/workspace.service';
+import { EventsGateway } from './events/events.gateway';
+import { SocketService } from './socket/socket.service';
+import { NotificationService } from './notification/notification.service';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [
@@ -22,6 +26,6 @@ import { WorkspaceService } from './workspace/workspace.service';
     MailModule,
   ],
   controllers: [AppController, WorkspaceController],
-  providers: [AppService, PrismaService, WorkspaceService],
+  providers: [AppService, PrismaService, WorkspaceService, EventsGateway, SocketService, NotificationService, UserService],
 })
 export class AppModule {}

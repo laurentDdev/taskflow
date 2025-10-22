@@ -1,5 +1,5 @@
 export type Workspace = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   logo: string;
