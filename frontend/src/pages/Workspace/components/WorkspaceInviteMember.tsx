@@ -35,6 +35,7 @@ const WorkspaceInviteMember = ({
   const { t } = useTranslation("workspace");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean | null>(null);
+  const [copyLink, setCopyLink] = useState<string | null>(null);
 
   const formSchema = z.object({
     email: z.email(t("inviteMembersCard.errors.email")),
@@ -54,6 +55,26 @@ const WorkspaceInviteMember = ({
       setTimeout(() => {
         setSuccess(false);
         form.reset();
+      }, 3000);
+    } catch (error) {
+      const err = error as { message: string };
+      setError(err.message);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
+  };
+
+  const handleGenerateInviteLink = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    try {
+      const link = await workspaceApi.generateWorkspaceInviteLink(workspaceId);
+      navigator.clipboard.writeText(link);
+      setCopyLink(link);
+      setTimeout(() => {
+        setCopyLink(null);
       }, 3000);
     } catch (error) {
       const err = error as { message: string };
@@ -104,14 +125,22 @@ const WorkspaceInviteMember = ({
                   </div>
                 )}
                 {error && <div className="text-[var(--error)]">{t(error)}</div>}
-                <Button>
+                <Button type="submit" form="form-invite-member-workspace">
                   <FaPlus />
                   {t("inviteMembersCard.submit")}
                 </Button>
-                <Button variant={"secondary"}>
+                <Button
+                  variant={"secondary"}
+                  onClick={handleGenerateInviteLink}
+                >
                   <FaLink />
                   {t("inviteMembersCard.generateLink")}
                 </Button>
+                {copyLink && (
+                  <div className="text-[var(--success)]">
+                    {t("inviteMembersCard.copyLink")}
+                  </div>
+                )}
               </Field>
             )}
           />

@@ -51,11 +51,31 @@ class WorkspaceApi {
     }
   }
 
+  async generateWorkspaceInviteLink(workspaceId: string) {
+    try {
+      const data = await api.get(
+        `${this.baseUrl}/${workspaceId}/generate-link`,
+      );
+      return data.data;
+    } catch (error) {
+      console.error("Error generating invite link:", error);
+      const err = error as {
+        response: { data: { message: string }; status: number };
+      };
+      if (err.response.status === 404) {
+        throw new Error(err.response.data.message);
+      }
+      if (err.response.status === 401) {
+        return redirect("/auth");
+      }
+      throw new Error("An unknown error occurred while generating invite link");
+    }
+  }
+
   async inviteMemberToWorkspace(workspaceId: string, email: string) {
     try {
       await api.post(`${this.baseUrl}/${workspaceId}/invite`, { email });
     } catch (error) {
-      console.log(error.response, "ttt");
       const err = error as {
         response: { data: { message: string }; status: number };
       };

@@ -21,8 +21,10 @@
     "errors": {
       "email": "L'email est invalide",
       "user_not_found": "L'utilisateur n'a pas été trouvé",
-      "not_owner": "Vous n'êtes pas le propriétaire de ce workspace"
+      "not_owner": "Vous n'êtes pas le propriétaire de ce workspace",
+      "not_found": "Le workspace n'a pas été trouvé"
     },
+    "copyLink": "Le lien a été copié dans le presse-papiers",
     "success": "Membre invité avec succès"
   }
 }
