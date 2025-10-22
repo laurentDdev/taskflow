@@ -48,6 +48,40 @@ export class WorkspaceService {
     });
   }
 
+  async canGenerateInviteLink(userId: string, workspaceId: string) {
+    const workspace = await this.prismaService.workspace.findUnique({
+      where: {
+        id: workspaceId,
+      },
+    });
+
+    if (!workspace) {
+      throw new HttpException(
+        'inviteMembersCard.errors.not_found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (workspace.owner_id !== userId) {
+      throw new HttpException(
+        'inviteMembersCard.errors.not_owner',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return true;
+  }
+
+  async generateWorkspaceInviteLink(workspaceId: string, senderId: string) {
+    const inviteWorkspace = await this.prismaService.workspaceInvite.create({
+      data: {
+        workspaceId: workspaceId,
+        userId: senderId,
+      },
+    });
+    return `${process.env.FRONTEND_URL}/workspace/invite/${inviteWorkspace.id}`;
+  }
+
   async inviteUserToWorkspace(
     inviteUserDto: InviteUserDto,
     senderId: string,
@@ -80,14 +114,10 @@ export class WorkspaceService {
       );
     }
 
-    const inviteWorkspace = await this.prismaService.workspaceInvite.create({
-      data: {
-        workspaceId: workspace.id,
-        userId: senderId,
-      },
-    });
-
-    const inviteLink = `${process.env.FRONTEND_URL}/workspace/invite/${inviteWorkspace.id}`;
+    const inviteLink = await this.generateWorkspaceInviteLink(
+      workspaceId,
+      senderId,
+    );
 
     await this.notificationService.sendInviteWorkspaceInvite(
       workspace.owner,

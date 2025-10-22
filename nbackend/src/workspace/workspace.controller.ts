@@ -49,6 +49,23 @@ export class WorkspaceController {
     );
   }
 
+  @Get(':id/generate-link')
+  async generateWorkspaceInviteLink(
+    @Req() req: Request,
+    @Param('id') id: string,
+  ) {
+    const session = await this.authService.api.getSession({
+      headers: req.headers,
+    });
+
+    await this.workspaceService.canGenerateInviteLink(session!.user.id, id);
+
+    return await this.workspaceService.generateWorkspaceInviteLink(
+      id,
+      session!.user.id,
+    );
+  }
+
   @Get('')
   async getWorkspace(@Req() req: Request) {
     const session = await this.authService.api.getSession({
