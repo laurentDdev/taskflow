@@ -1,3 +1,4 @@
+// eslint.config.js
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -11,11 +12,23 @@ export default defineConfig([
     files: ["**/*.{ts,tsx}"],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommended,
       reactHooks.configs["recommended-latest"],
-      reactRefresh.configs.vite,
     ],
+    plugins: {
+      "react-refresh": reactRefresh,
+    },
+    rules: {
+      // Active les hooks React
+      ...reactHooks.configs["recommended-latest"].rules,
+      eresables
 
+      // React refresh : force d’exporter uniquement des composants
+      "react-refresh/only-export-components": [
+        "off",
+        { allowConstantExport: true },
+      ],
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,

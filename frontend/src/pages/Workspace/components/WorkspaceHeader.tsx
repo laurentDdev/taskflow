@@ -96,10 +96,10 @@ const WorkspaceHeader = ({
                   onClick={(e) =>
                     handleChangeWorkspaceNavigation(e, item.value)
                   }
-                  className={`block rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200 ease-in-out ${
+                  className={`block rounded-md px-4 text-black py-2 text-sm font-medium transition-colors duration-200 ease-in-out ${
                     workspaceNavigation === item.value
                       ? "bg-gray-600 text-white font-bold"
-                      : "text-blue-100 hover:bg-gray-400 hover:text-white"
+                      : "text-black dark:text-blue-100 hover:bg-gray-400 hover:text-white dark:hover:text-black"
                   }`}
                 >
                   {item.label}

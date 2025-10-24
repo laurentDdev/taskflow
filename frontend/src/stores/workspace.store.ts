@@ -17,6 +17,7 @@ type Action = {
   createWorkspace: (name: string, description: string) => Promise<void>;
   setWorkspaceNavigation: (navigation: string) => void;
   setWorkspaces: (workspaces: Workspace[]) => void;
+  addWorkspace: (workspace: Workspace) => void;
 };
 
 const useWorkspaceStore = create<State & Action>((set) => ({
@@ -29,6 +30,8 @@ const useWorkspaceStore = create<State & Action>((set) => ({
   setWorkspaceNavigation: (navigation: string) =>
     set({ workspaceNavigation: navigation }),
   setWorkspaces: (workspaces: Workspace[]) => set({ workspaces }),
+    addWorkspace: (workspace: Workspace) =>
+        set((state) => ({ workspaces: [...state.workspaces, workspace] })),
 }));
 
 export default useWorkspaceStore;

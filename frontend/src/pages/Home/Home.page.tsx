@@ -1,21 +1,14 @@
 import HomeNavigation from "./components/HomeNavigation";
 import HomeHeader from "./components/HomeHeader";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HomeContent from "./components/HomeContent";
-import { Navigate, useLoaderData } from "react-router";
-import useWorkspaceStore from "@/stores/workspace.store";
+import { Navigate } from "react-router";
 import { signOut, useSession } from "@/lib/auth-client";
 import Loading from "../Loading.page";
 
 const Home = () => {
   const { data: session, isPending } = useSession();
-  const { setWorkspaces } = useWorkspaceStore();
   const [filter, setFilter] = useState("");
-  const data = useLoaderData();
-
-  useEffect(() => {
-    setWorkspaces(data.workspaces);
-  }, [data, setWorkspaces]);
 
   if (isPending) return <Loading />;
 
@@ -24,12 +17,10 @@ const Home = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col gap-2">
       <HomeNavigation user={session?.user} logout={signOut} />
-      <div className="p-5 gap-5 flex-1 flex flex-col">
         <HomeHeader filter={filter} setFilter={setFilter} />
-        <HomeContent filter={filter} />
-      </div>
+        <HomeContent filter={filter} user={session.user} />
     </div>
   );
 };

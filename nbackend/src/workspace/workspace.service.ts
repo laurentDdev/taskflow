@@ -3,6 +3,7 @@ import { CreateWorkspaceDto, InviteUserDto } from './workspace.validator';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { NotificationService } from 'src/notification/notification.service';
+import { WorkspaceRole } from 'src/common/enums/workspace-role';
 
 @Injectable()
 export class WorkspaceService {
@@ -12,6 +13,57 @@ export class WorkspaceService {
     private notificationService: NotificationService,
   ) {}
 
+  async joinWorkspaceByInviteLink(inviteId: string, userId: string) {
+    const invite = await this.prismaService.workspaceInvite.findUnique({
+      where: {
+        id: inviteId,
+      },
+    });
+
+    if (!invite) {
+      throw new HttpException(
+        'workspace.invite.errors.invalid_link',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const isAlreadyMember = await this.prismaService.workspaceMember.findFirst({
+      where: { userId: userId, workspaceId: invite.workspaceId },
+    });
+
+    if (isAlreadyMember) {
+      throw new HttpException(
+        'workspace.invite.errors.already_member',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    const workspaceMember = await this.prismaService.workspaceMember.create({
+      data: {
+        userId: userId,
+        workspaceId: invite.workspaceId,
+      },
+      include: {
+        workspace: true,
+        user: true,
+      },
+    });
+
+    await this.prismaService.workspaceInvite.delete({
+      where: {
+        id: inviteId,
+      },
+    });
+
+    return this.prismaService.workspace.findUnique({
+      where: {
+        id: workspaceMember.workspaceId,
+      },
+      include: {
+        WorkspaceMember: true,
+      },
+    });
+  }
+
   async createWorkspace(
     createWorkspaceDto: CreateWorkspaceDto,
     userId: string,
@@ -20,38 +72,66 @@ export class WorkspaceService {
       data: {
         name: createWorkspaceDto.name,
         description: createWorkspaceDto.description,
-        owner_id: userId,
+        WorkspaceMember: {
+          create: {
+            userId: userId,
+            role: 'OWNER',
+          },
+        },
+      },
+      include: {
+        WorkspaceMember: true,
       },
     });
   }
 
   async findAll(userId: string) {
-    console.log('Finding workspaces for user:', userId);
-
-    const workspaces = await this.prismaService.workspace.findMany({
+    return this.prismaService.workspace.findMany({
       where: {
-        owner_id: userId,
+        WorkspaceMember: {
+          some: { userId },
+        },
+      },
+      include: {
+        WorkspaceMember: true,
       },
     });
-
-    console.log('Found workspaces:', workspaces);
-
-    return workspaces;
   }
 
   async findById(userId: string, workspaceId: string) {
-    return this.prismaService.workspace.findFirst({
+    const userWithWorkspace = await this.prismaService.workspace.findUnique({
       where: {
         id: workspaceId,
-        owner_id: userId,
+        WorkspaceMember: {
+          some: { userId },
+        },
+      },
+      include: {
+        WorkspaceMember: true,
       },
     });
+
+    if (!userWithWorkspace) {
+      throw new HttpException(
+        'workspace.not_in_workspace',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return userWithWorkspace;
   }
 
   async canGenerateInviteLink(userId: string, workspaceId: string) {
     const workspace = await this.prismaService.workspace.findUnique({
       where: {
         id: workspaceId,
+      },
+      include: {
+        WorkspaceMember: {
+          where: {
+            userId: userId,
+          },
+        },
       },
     });
 
@@ -62,12 +142,7 @@ export class WorkspaceService {
       );
     }
 
-    if (workspace.owner_id !== userId) {
-      throw new HttpException(
-        'inviteMembersCard.errors.not_owner',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    console.log(workspace);
 
     return true;
   }
@@ -84,28 +159,36 @@ export class WorkspaceService {
 
   async inviteUserToWorkspace(
     inviteUserDto: InviteUserDto,
-    senderId: string,
+    senderId: string, // L'utilisateur authentifié qui envoie l'invitation
     workspaceId: string,
   ) {
-    const workspace = await this.prismaService.workspace.findUnique({
-      where: {
-        id: workspaceId,
-      },
-      include: {
-        owner: true,
-      },
-    });
+    const invitedEmail = inviteUserDto.email;
 
-    if (workspace?.owner_id !== senderId) {
+    const senderMembership = await this.prismaService.workspaceMember.findFirst(
+      {
+        where: {
+          userId: senderId,
+          workspaceId: workspaceId,
+        },
+        include: {
+          user: true,
+        },
+      },
+    );
+
+    if (
+      !senderMembership ||
+      (senderMembership.role !== WorkspaceRole.OWNER &&
+        senderMembership.role !== WorkspaceRole.ADMIN)
+    ) {
       throw new HttpException(
         'inviteMembersCard.errors.not_owner',
         HttpStatus.UNAUTHORIZED,
       );
     }
 
-    const invitedUser = await this.userService.getUserByEmail(
-      inviteUserDto.email,
-    );
+    // 2. Vérification de l'Existence de l'Invité (et si déjà membre)
+    const invitedUser = await this.userService.getUserByEmail(invitedEmail);
 
     if (!invitedUser) {
       throw new HttpException(
@@ -114,18 +197,45 @@ export class WorkspaceService {
       );
     }
 
-    const inviteLink = await this.generateWorkspaceInviteLink(
+    // Vérifie si l'utilisateur est déjà membre du workspace (Évite la duplication)
+    const isAlreadyMember = await this.prismaService.workspaceMember.findFirst({
+      where: { userId: invitedUser.id, workspaceId: workspaceId },
+    });
+
+    if (isAlreadyMember) {
+      throw new HttpException(
+        'inviteMembersCard.errors.already_member',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    // C'est l'étape essentielle pour que l'invitation soit valide.
+    const invitation = await this.generateWorkspaceInviteLink(
       workspaceId,
       senderId,
     );
 
+    // Récupère les données du workspace et de l'expéditeur pour l'email
+    const workspaceDetails = await this.prismaService.workspace.findUnique({
+      where: { id: workspaceId },
+      select: { name: true },
+    });
+
+    if (!workspaceDetails) {
+      throw new HttpException(
+        'inviteMembersCard.errors.workspace_not_found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     await this.notificationService.sendInviteWorkspaceInvite(
-      workspace.owner,
-      workspace.name,
+      senderMembership!.user,
+      workspaceDetails.name,
       invitedUser,
-      inviteLink,
+      invitation,
     );
 
+    // 5. Réponse
     return {
       message: 'success',
     };

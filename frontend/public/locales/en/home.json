@@ -7,6 +7,7 @@
   "profile": "My Profile",
   "theme": "Theme",
   "language": "Language",
+  "notifications": "My notifications",
   "createWorkspace": {
     "form": {
       "name": {
@@ -33,5 +34,6 @@
     }
   },
   "myWorkspaces": "My Workspaces",
-  "search": "Search a workspace"
+  "search": "Search a workspace",
+  "noNotifications": "You have no notifications"
 }

@@ -24,10 +24,10 @@ model User {
   updatedAt             DateTime          @default(now()) @updatedAt
   sessions              Session[]
   accounts              Account[]
-  workspaces            Workspace[]
   sentNotifications     Notification[]    @relation("SentNotifications")
   receivedNotifications Notification[]    @relation("ReceivedNotifications")
   WorkspaceInvite       WorkspaceInvite[]
+  WorkspaceMember       WorkspaceMember[]
 
   @@unique([email])
   @@map("user")
@@ -78,17 +78,25 @@ model Verification {
   @@map("verification")
 }
 
+model WorkspaceMember {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String    @default("member")
+}
+
 model Workspace {
   id          String   @id @default(uuid())
   name        String   @db.Text
   description String?  @db.Text
   logo        String?  @db.Text
-  owner_id    String
-  owner       User     @relation(fields: [owner_id], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 
   WorkspaceInvite WorkspaceInvite[]
+  WorkspaceMember WorkspaceMember[]
 }
 
 model WorkspaceInvite {

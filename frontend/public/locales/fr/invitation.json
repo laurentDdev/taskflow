@@ -1,0 +1,14 @@
+{
+  "workspace": {
+    "invite": {
+      "title": "Invitation au Workspace",
+      "message": "vous invite à rejoindre le workspace",
+      "errors": {
+        "invalid_link": "Le lien d'invitation est invalide.",
+        "already_member": "Vous êtes déjà membre de ce workspace."
+      },
+      "backToHome": "Retour à vos workspaces"
+    },
+
+  }
+}

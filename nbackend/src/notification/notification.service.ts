@@ -11,6 +11,30 @@ export class NotificationService {
     private mailService: MailService,
   ) {}
 
+  async findAll(userId: string) {
+    const notifications = await this.prismaService.notification.findMany({
+      where: {
+        receiverId: userId,
+      },
+      include: {
+        sender: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      }
+    });
+
+    return notifications.map((notifications) => ({
+      id: notifications.id,
+      title: notifications.title,
+      message: notifications.message,
+      directLink: notifications.directLink,
+      inviteUserName: notifications.sender.username,
+      createdAt: notifications.createdAt,
+      status: notifications.status,
+    }));
+  }
+
   async sendInviteWorkspaceInvite(
     workspaceUser: {
       id: string;
@@ -46,11 +70,13 @@ export class NotificationService {
     const onlineUser = this.socketService.getClient(userInvited.id);
     if (onlineUser) {
       onlineUser.emit('receivedNotification', {
+        id: notification.id,
         title: notification.title,
         message: notification.message,
         directLink: notification.directLink,
         inviteUserName: userInvited.username,
-        workspaceName: workspaceName,
+        createdAt: notification.createdAt,
+        status: 'unread',
       });
     }
 

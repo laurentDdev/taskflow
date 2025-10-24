@@ -1,26 +1,20 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, useParams } from "react-router";
 import WorkspaceHeader from "./components/WorkspaceHeader";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import useWorkspaceStore from "@/stores/workspace.store";
 
 const Workspace = () => {
   const [filter, setFilter] = useState("");
   const { t } = useTranslation("workspace");
+  const { workspaces } = useWorkspaceStore();
+  const params = useParams();
+  const workspace = workspaces.find((w) => w.id === params.id);
 
-  const workspace = useLoaderData();
   if (!workspace) {
-    return (
-      <div className="h-screen w-full flex flex-col gap-5 justify-center items-center font-bold">
-        {t("workspaceNotFound")}
-        <Link to="/">
-          <Button>{t("backToWorkspacesList")}</Button>
-        </Link>
-      </div>
-    );
+    return <div>{t("workspaceNotFound")}</div>;
   }
-
-  console.log(workspace);
 
   return (
     <div className="p-5">

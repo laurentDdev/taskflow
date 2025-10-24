@@ -17,7 +17,8 @@ export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
     private authService: AuthService,
-  ) {}
+  ) {
+  }
 
   @Post('')
   async createWorkspace(
@@ -32,6 +33,21 @@ export class WorkspaceController {
       session!.user.id,
     );
   }
+
+  @Post(':inviteId/join')
+  async joinWorkspaceByInviteLink(
+    @Param('inviteId') inviteId: string,
+    @Req() req: Request,
+  ) {
+    const session = await this.authService.api.getSession({
+      headers: req.headers,
+    });
+    return await this.workspaceService.joinWorkspaceByInviteLink(
+      inviteId,
+      session!.user.id,
+    );
+  }
+
 
   @Post(':id/invite')
   async inviteUserToWorkspace(

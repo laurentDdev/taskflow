@@ -23,6 +23,7 @@ import { requestPasswordReset } from "@/lib/auth-client";
 const ForgotPassword = () => {
   const { t } = useTranslation("forgotPassword");
   const [success, sendSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const formSchema = z.object({
     email: z.email({ message: t("errors.email") }),
@@ -36,28 +37,18 @@ const ForgotPassword = () => {
   });
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    console.log(formData);
-    // try {
-    //   const response = await authApi.sendResetPasswordEmail(data.email);
-    //   if (response.message) {
-    //     sendSuccess(true);
-    //     setTimeout(() => {
-    //       sendSuccess(false);
-    //       form.reset();
-    //     }, 5000);
-    //   }
-    // } catch (error) {
-    //   sendSuccess(true);
-    //   setTimeout(() => {
-    //     sendSuccess(false);
-    //     form.reset();
-    //   }, 5000);
-    // }
-
     const { data, error } = await requestPasswordReset({
       email: formData.email,
       redirectTo: `${window.location.origin}/auth/reset-password`,
     });
+
+    if (error) {
+      setError(error.message ? error.message : "An error occurred");
+      setTimeout(() => setError(null), 5000);
+      sendSuccess(false);
+    } else {
+      setError(null);
+    }
 
     if (data) {
       sendSuccess(true);
@@ -109,6 +100,7 @@ const ForgotPassword = () => {
             <Button type={"submit"} form="form-forgot-password">
               {t("confirm")}
             </Button>
+            {error && <div className="text-[var(--error)]">{error}</div>}
             {success && (
               <div className="text-[var(--success)]">{t("success")}</div>
             )}

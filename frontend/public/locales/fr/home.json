@@ -7,6 +7,7 @@
   "profile": "Mon Profile",
   "theme": "Thème",
   "language": "Langue",
+  "notifications": "Mes notifications",
   "createWorkspace": {
     "form": {
       "name": {
@@ -33,5 +34,6 @@
     }
   },
   "myWorkspaces": "Mes espaces de travail",
-  "search": "Rechercher un espace de travail"
+  "search": "Rechercher un espace de travail",
+  "noNotifications": "Vous n'avez pas de notifications"
 }

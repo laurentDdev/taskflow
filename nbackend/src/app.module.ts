@@ -12,6 +12,7 @@ import { EventsGateway } from './events/events.gateway';
 import { SocketService } from './socket/socket.service';
 import { NotificationService } from './notification/notification.service';
 import { UserService } from './user/user.service';
+import { NotificationController } from './notification/notification.controller';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { UserService } from './user/user.service';
     }),
     MailModule,
   ],
-  controllers: [AppController, WorkspaceController],
+  controllers: [AppController, WorkspaceController, NotificationController],
   providers: [AppService, PrismaService, WorkspaceService, EventsGateway, SocketService, NotificationService, UserService],
 })
 export class AppModule {}
