@@ -49,7 +49,7 @@ const HomeNavigation = ({user, logout}: HomeNavigationProps) => {
     const {t: workspaceT} = useTranslation("invitation");
     const {workspaces} = useWorkspaceStore();
     const [openSheet, setOpenSheet] = useState(false);
-    const {getUnreadNotificationsCount, notifications} = useNotificationStore()
+    const {getUnreadNotificationsCount, notifications, readRecentsNotification} = useNotificationStore()
 
     const {theme, setTheme} = useTheme();
 
@@ -57,6 +57,8 @@ const HomeNavigation = ({user, logout}: HomeNavigationProps) => {
     const handleLogout = async () => {
         logout();
     }
+
+
 
     return (
         <Drawer direction="left">
@@ -170,12 +172,14 @@ const HomeNavigation = ({user, logout}: HomeNavigationProps) => {
                                     </DropdownMenuPortal>
                                 </DropdownMenuSub>
 
-                                {/* Notifications → ouvre le panneau latéral */}
                                 <Sheet open={openSheet} onOpenChange={setOpenSheet}>
                                     <SheetTrigger asChild>
                                         <DropdownMenuItem
                                             className="cursor-pointer relative flex items-center gap-2"
-                                            onSelect={(e) => e.preventDefault()} // évite la fermeture auto du dropdown
+                                            onSelect={(e) => {
+                                                e.preventDefault()
+                                                readRecentsNotification(5)
+                                            }}
                                         >
                                             <IoIosNotifications className="text-lg"/>
                                             <span>{t("notifications")}</span>

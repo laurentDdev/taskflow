@@ -11,6 +11,32 @@ export class NotificationService {
     private mailService: MailService,
   ) {}
 
+  async markRecentAsRead(userId: string, count: number) {
+    const notifications = await this.prismaService.notification.findMany({
+      where: {
+        receiverId: userId,
+        status: 'unread',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: count,
+    });
+    const notificationIds = notifications.map((n) => n.id);
+
+    await this.prismaService.notification.updateMany({
+      where: {
+        id: {
+          in: notificationIds,
+        },
+      },
+      data: {
+        status: 'read',
+      },
+    });
+    return notificationIds;
+  }
+
   async findAll(userId: string) {
     const notifications = await this.prismaService.notification.findMany({
       where: {
@@ -21,7 +47,7 @@ export class NotificationService {
       },
       orderBy: {
         createdAt: 'desc',
-      }
+      },
     });
 
     return notifications.map((notifications) => ({
