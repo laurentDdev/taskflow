@@ -6,6 +6,9 @@ import * as z from "zod";
 import {useForm} from "vee-validate";
 import {toTypedSchema} from "@vee-validate/zod";
 import {signUp} from "../../../lib/auth-client.ts";
+import {useRoute, useRouter} from "vue-router";
+
+const router = useRouter()
 
 const {t} = useI18n()
 
@@ -46,12 +49,15 @@ const onSubmit =  handleSubmit(async (values) => {
     email: values.email,
     password: values.password,
     name: values.pseudo,
-    callbackURL: window.location.origin,
   })
 
   if (error) {
     errorSubmitting.value = t('auth.form.errors.'+ error.code)
+    return
   }
+
+  await router.replace('/')
+
 
 })
 

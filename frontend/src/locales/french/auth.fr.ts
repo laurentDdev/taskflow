@@ -16,9 +16,15 @@ const AuthLocaleFR = {
                 placeholder: "Entrez votre pseudo",
             }
         },
+        success: {
+            resetLinkSent: "Un lien de réinitialisation a été envoyé à votre adresse e-mail si elle est associée à un compte.",
+        },
         errors: {
             email: "Veuillez entrer une adresse e-mail valide.",
             pseudo: 'Le pseudo est requis.',
+            oauth: {
+                account_not_linked: "Cette e-mail est déjà associée à un autre compte. Veuillez vous connecter en utilisant cette méthode d'abord pour lier vos comptes.",
+            },
             password: {
                 required: "Le mot de passe est requis.",
                 minLength: "Le mot de passe doit contenir au moins 8 caractères.",
@@ -26,11 +32,13 @@ const AuthLocaleFR = {
             },
             "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "L'utilisateur existe déjà, veuillez utiliser une autre adresse e-mail.",
             "INVALID_EMAIL_OR_PASSWORD": 'E-mail ou mot de passe invalide.',
-        },
-        confirmLogin: "Se connecter",
-        confirmRegister: "S'inscrire",
-        forgotPassword: "Mot de passe oublié ?"
-    }
+        forgotPassword: 'Une erreur est survenue lors de la tentative de réinitialisation du mot de passe. Veuillez réessayer plus tard.',
+    },
+    confirmLogin: "Se connecter",
+    confirmRegister: "S'inscrire",
+    sendResetLink: "Envoyer le lien de réinitialisation",
+    forgotPassword: "Mot de passe oublié ?"
+}
 }
 
 export default AuthLocaleFR;

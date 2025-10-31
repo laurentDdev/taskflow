@@ -93,7 +93,7 @@ const handleViewPassword = () => {
         {{t("auth.form.confirmLogin")}}
       </button>
 
-      <RouterLink to="/forgot-password" class="text-center">
+      <RouterLink to="/auth/forgot-password" class="text-center">
         {{t('auth.form.forgotPassword')}}
       </RouterLink>
 

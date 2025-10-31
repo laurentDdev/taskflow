@@ -2,11 +2,25 @@
 
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
+import {computed} from "vue";
+import {signIn} from "../../lib/auth-client.ts";
 
 const route = useRoute()
 
 const {t} = useI18n()
 
+const isForgotPassword = computed(() => route.fullPath === '/auth/forgot-password')
+
+
+const handleSocialLogin = async (social: string) => {
+  await signIn.social({
+    provider: social,
+    callbackURL: window.location.origin,
+    errorCallbackURL: window.location.origin + '/auth'
+  })
+}
+
+const accountLinkError = computed(() => route.query.error === 'account_not_linked')
 
 
 </script>
@@ -29,17 +43,20 @@ const {t} = useI18n()
             <component :is="Component" :key="route.path" />
           </Transition>
         </router-view>
-        <div class="divider">{{t('auth.or')}}</div>
-        <div class="grid grid-cols-2 gap-3">
-          <button class="btn btn-outline outline-primary">
-            <v-icon name="fa-github" />
-            Github
-          </button>
-          <button class="btn btn-outline outline-primary">
-            <v-icon name="fa-google"/>
-            Google
-          </button>
-        </div>
+        <template v-if="!isForgotPassword">
+          <div class="divider">{{t('auth.or')}}</div>
+          <div class="grid grid-cols-2 gap-3">
+            <button class="btn btn-outline outline-primary" @click="handleSocialLogin('github')">
+              <v-icon name="fa-github" />
+              Github
+            </button>
+            <button class="btn btn-outline outline-primary" @click="handleSocialLogin('google')">
+              <v-icon name="fa-google"/>
+              Google
+            </button>
+          </div>
+          <p v-if="accountLinkError" class="text-error">{{t('auth.form.errors.oauth.account_not_linked')}}</p>
+        </template>
       </div>
     </div>
   </main>
