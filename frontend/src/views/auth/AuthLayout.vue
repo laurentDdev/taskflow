@@ -24,7 +24,22 @@ const {t} = useI18n()
         <p class="text-sm">{{t('slogan')}}</p>
       </div>
       <div class="card-body px-0 py-4 ">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <Transition name="fade-slide" mode="out-in">
+            <component :is="Component" :key="route.path" />
+          </Transition>
+        </router-view>
+        <div class="divider">{{t('auth.or')}}</div>
+        <div class="grid grid-cols-2 gap-3">
+          <button class="btn btn-outline outline-primary">
+            <v-icon name="fa-github" />
+            Github
+          </button>
+          <button class="btn btn-outline outline-primary">
+            <v-icon name="fa-google"/>
+            Google
+          </button>
+        </div>
       </div>
     </div>
   </main>
@@ -32,4 +47,25 @@ const {t} = useI18n()
 
 <style scoped>
 
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(15px);
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+
+  transition: all 0.25s ease-out;
+}
+
+.fade-slide-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fade-slide-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
 </style>

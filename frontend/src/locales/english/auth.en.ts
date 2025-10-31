@@ -11,16 +11,24 @@ const AuthLocaleEN = {
             },
             password: {
                 placeholder: "Enter your password",
+            },
+            pseudo: {
+                placeholder: "Enter your pseudo",
+
             }
         },
         errors: {
             email: "Please enter a valid email address.",
+            pseudo: 'Pseudo is required.',
             password: {
                 required: "Password is required.",
                 minLength: "Password must be at least 8 characters long.",
                 maxLength: "Password must not exceed 128 characters.",
-            }
+            },
+            "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "User already exists, please use another email.",
         },
+        confirmLogin: "Sign In",
+        confirmRegister: "Sign Up",
         forgotPassword: "Forgot Password ?"
     }
 }

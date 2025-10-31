@@ -5,26 +5,45 @@ import {toTypedSchema} from "@vee-validate/zod";
 import * as z from "zod";
 import {useI18n} from "vue-i18n";
 import {computed, ref} from "vue";
+import {signIn, signUp} from "../../../lib/auth-client.ts";
 
 const {t} = useI18n()
 
 const schema = computed(() =>
     z.object({
-      email: z.email({error: t('auth.form.errors.email')}),
-      password: z.string({error: t('auth.form.errors.password.required')})
-          .min(8, {error: t('auth.form.errors.password.minLength')})
-          .max(128, {error: t('auth.form.errors.password.maxLength')}),
+      email: z.string().email({message: t('auth.form.errors.email')}),
+      password: z.string({message: t('auth.form.errors.password.required')})
+          .min(8, {message: t('auth.form.errors.password.minLength')})
+          .max(128, {message: t('auth.form.errors.password.maxLength')}),
     })
 );
 
 
-const {values, defineField, errors} = useForm({
+const {values, defineField, errors, handleSubmit} = useForm({
   validationSchema: toTypedSchema(schema.value)
 })
 const [email, emailAttrs] = defineField("email")
 const [password, passwordAttrs] = defineField("password")
 const showPassword = ref(false)
-const passwordRef = ref<HTMLInputElement>(null)
+const passwordRef = ref<HTMLInputElement | null>(null)
+const errorSubmitting = ref("")
+
+const onSubmit =  handleSubmit(async (values) => {
+
+  errorSubmitting.value.length > 0 && (errorSubmitting.value = "")
+
+  const {data, error} = await signIn.email({
+    email: values.email,
+    password: values.password,
+    callbackURL: window.location.origin,
+    rememberMe: true
+  })
+
+  if (error) {
+    errorSubmitting.value = t('auth.form.errors.'+ error.code)
+  }
+
+})
 
 
 const handleViewPassword = () => {
@@ -39,7 +58,7 @@ const handleViewPassword = () => {
 
 <template>
 
-  <form action="" class="flex flex-col gap-4">
+  <form id="form-login" class="flex flex-col gap-4" @submit="onSubmit">
     <div class="flex flex-col gap-2">
       <label class="input outline-none w-full"
              :class="errors.email ? 'input-error' : values.email && values.email?.length > 0 && 'input-success'"
@@ -67,6 +86,12 @@ const handleViewPassword = () => {
       <p v-if="errors.password" class="text-error">
         {{ errors.password }}
       </p>
+      <p v-if="errorSubmitting.length > 0" class="text-error">
+        {{ errorSubmitting }}
+      </p>
+      <button class="btn btn-primary" form="form-login" type="submit">
+        {{t("auth.form.confirmLogin")}}
+      </button>
 
       <RouterLink to="/forgot-password" class="text-center">
         {{t('auth.form.forgotPassword')}}
@@ -74,17 +99,6 @@ const handleViewPassword = () => {
 
     </div>
   </form>
-  <div class="divider">{{t('auth.or')}}</div>
-  <div class="grid grid-cols-2 gap-3">
-    <button class="btn btn-outline outline-primary">
-      <v-icon name="fa-github" />
-      Github
-    </button>
-    <button class="btn btn-outline outline-primary">
-      <v-icon name="fa-google"/>
-      Google
-    </button>
-  </div>
 </template>
 
 <style scoped>
