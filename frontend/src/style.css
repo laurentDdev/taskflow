@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark, cupcake;
+}
+
+*, ::before, ::after {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --backgroundColor: #ECF0F1;
+}
+
+body {
+    min-height: 100vh;
+}
