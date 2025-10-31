@@ -26,6 +26,7 @@ const AuthLocaleEN = {
                 maxLength: "Password must not exceed 128 characters.",
             },
             "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "User already exists, please use another email.",
+            "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password.",
         },
         confirmLogin: "Sign In",
         confirmRegister: "Sign Up",

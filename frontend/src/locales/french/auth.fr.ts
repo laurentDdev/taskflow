@@ -25,6 +25,7 @@ const AuthLocaleFR = {
                 maxLength: "Le mot de passe ne doit pas dépasser 128 caractères.",
             },
             "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "L'utilisateur existe déjà, veuillez utiliser une autre adresse e-mail.",
+            "INVALID_EMAIL_OR_PASSWORD": 'E-mail ou mot de passe invalide.',
         },
         confirmLogin: "Se connecter",
         confirmRegister: "S'inscrire",
