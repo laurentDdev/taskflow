@@ -4,11 +4,11 @@ import App from './App.vue'
 import {router} from "./route.ts";
 import i18n from "./i18n.ts";
 import {addIcons, OhVueIcon} from "oh-vue-icons";
-import {MdEmail, BiKeyFill, FaRegularEye, FaRegularEyeSlash, FaGithub, FaGoogle, FaUserAlt} from "oh-vue-icons/icons";
+import {MdEmail, BiKeyFill, FaRegularEye, FaRegularEyeSlash, FaGithub, FaGoogle, FaUserAlt, FcMenu, FaCaretDown, MdLogoutRound, FaLightbulb, FaLanguage} from "oh-vue-icons/icons";
 
 
 
-addIcons(MdEmail, BiKeyFill, FaRegularEye, FaRegularEyeSlash, FaGithub, FaGoogle, FaUserAlt)
+addIcons(MdEmail, BiKeyFill, FaRegularEye, FaRegularEyeSlash, FaGithub, FaGoogle, FaUserAlt, FcMenu, FaCaretDown, MdLogoutRound, FaLightbulb, FaLanguage)
 
 const app = createApp(App)
 app.use(i18n)

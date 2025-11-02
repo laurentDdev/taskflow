@@ -32,10 +32,10 @@ const onSubmit =  handleSubmit(async (values) => {
 
   errorSubmitting.value.length > 0 && (errorSubmitting.value = "")
 
-  const {data, error} = await signIn.email({
+  const {error} = await signIn.email({
     email: values.email,
     password: values.password,
-    callbackURL: window.location.origin,
+    callbackURL: window.location.origin + "/dashboard",
     rememberMe: true
   })
 

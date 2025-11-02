@@ -62,7 +62,7 @@ const onSubmit = handleSubmit(async (values) => {
       <p v-if="errors.email" class="text-error">
         {{ errors.email }}
       </p>
-      <p v-if="successForgot">{{t('auth.form.success.resetLinkSent')}}</p>
+      <p v-if="successForgot" class="text-success">{{t('auth.form.success.resetLinkSent')}}</p>
     </div>
     <button class="btn btn-primary w-full">{{ t('auth.form.sendResetLink') }}</button>
   </form>

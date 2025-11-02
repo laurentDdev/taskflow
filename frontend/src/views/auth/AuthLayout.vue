@@ -15,7 +15,7 @@ const isForgotPassword = computed(() => route.fullPath === '/auth/forgot-passwor
 const handleSocialLogin = async (social: string) => {
   await signIn.social({
     provider: social,
-    callbackURL: window.location.origin,
+    callbackURL: window.location.origin + '/dashboard',
     errorCallbackURL: window.location.origin + '/auth'
   })
 }
