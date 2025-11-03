@@ -58,6 +58,7 @@ const handleLogout = async () => {
                         {{ t("dashboard.title") }}
                     </div>
                 </div>
+                <!-- Ul for list workspaces  -->
                 <div class="menu flex-1 w-full">
                     <ul></ul>
                 </div>

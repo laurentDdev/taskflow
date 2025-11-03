@@ -18,6 +18,8 @@ import {
   FaLightbulb,
   FaLanguage,
   FaPlus,
+  MdWorkspacesfilled,
+  MdDescriptionOutlined,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -34,6 +36,8 @@ addIcons(
   FaLightbulb,
   FaLanguage,
   FaPlus,
+  MdWorkspacesfilled,
+  MdDescriptionOutlined,
 );
 
 const app = createApp(App);

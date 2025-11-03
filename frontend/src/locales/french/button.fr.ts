@@ -1,5 +1,5 @@
 const ButtonLocaleFr = {
-  newWorkspace: "Nouvelle espace de travail",
+  newWorkspace: "Nouveau espace de travail",
 };
 
 export default ButtonLocaleFr;
