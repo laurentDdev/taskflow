@@ -43,7 +43,7 @@ export const router = createRouter({
 
 router.beforeEach(async (to) => {
   const { data } = await getSession();
-  if (to.path === "/dashboard" && !data?.session) {
+  if (to.path === "/" && !data?.session) {
     return { path: "/auth" };
   }
   if (to.path.startsWith("/auth") && data?.session) {

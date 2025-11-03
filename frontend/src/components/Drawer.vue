@@ -61,128 +61,142 @@ const handleLogout = async () => {
                     <ul></ul>
                 </div>
                 <!--  Drawer bottom   -->
-                <div
-                    v-if="session && session.data"
-                    class="dropdown dropdown-top dropdown-end mt-5"
-                >
-                    <div
-                        tabindex="0"
-                        role="button"
-                        class="btn m-1 w-full flex gap-2 justify-between"
-                    >
-                        <div class="flex gap-2 items-center">
-                            <div class="avatar">
-                                <div class="w-6 rounded-lg">
-                                    <img
-                                        :src="session.data.user.image || ''"
-                                        alt="profil picture"
-                                    />
-                                </div>
-                            </div>
-                            <p>{{ session.data.user.name }}</p>
-                        </div>
-                        <div>
-                            <v-icon name="fa-caret-down" />
-                        </div>
+                <div class="flex flex-col gap-2">
+                    <div class="btn btn-primary w-full flex items-center gap-2">
+                        {{ t("button.newWorkspace") }}
+                        <v-icon name="fa-plus" />
                     </div>
-
-                    <ul
-                        tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-xl mb-2"
+                    <div
+                        v-if="session && session.data"
+                        class="dropdown dropdown-top dropdown-end w-full"
                     >
-                        <!-- Theme Menu -->
-                        <li>
-                            <details>
-                                <summary class="flex justify-between">
-                                    <span>{{
-                                        t("dashboard.dropdown.theme") || "Thème"
-                                    }}</span>
-                                </summary>
-                                <ul class="p-2">
-                                    <li>
-                                        <a @click="handleChangeTheme('dark')">
-                                            {{
-                                                t(
-                                                    "dashboard.dropdown.themes.dark",
-                                                )
-                                            }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a @click="handleChangeTheme('light')">
-                                            {{
-                                                t(
-                                                    "dashboard.dropdown.themes.light",
-                                                )
-                                            }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            @click="
-                                                handleChangeTheme('cupcake')
-                                            "
+                        <div
+                            tabindex="0"
+                            role="button"
+                            class="btn m-1 w-full flex gap-2 justify-between"
+                        >
+                            <div class="flex gap-2 items-center">
+                                <div class="avatar">
+                                    <div class="w-6 rounded-lg">
+                                        <img
+                                            :src="session.data.user.image || ''"
+                                            alt="profil picture"
+                                        />
+                                    </div>
+                                </div>
+                                <p>{{ session.data.user.name }}</p>
+                            </div>
+                            <div>
+                                <v-icon name="fa-caret-down" />
+                            </div>
+                        </div>
+                        <ul
+                            tabindex="0"
+                            class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-xl mb-2"
+                        >
+                            <!-- Theme Menu -->
+                            <li>
+                                <details>
+                                    <summary class="flex justify-between">
+                                        <span>{{
+                                            t("dashboard.dropdown.theme") ||
+                                            "Thème"
+                                        }}</span>
+                                    </summary>
+                                    <ul class="p-2">
+                                        <li>
+                                            <a
+                                                @click="
+                                                    handleChangeTheme('dark')
+                                                "
+                                            >
+                                                {{
+                                                    t(
+                                                        "dashboard.dropdown.themes.dark",
+                                                    )
+                                                }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                @click="
+                                                    handleChangeTheme('light')
+                                                "
+                                            >
+                                                {{
+                                                    t(
+                                                        "dashboard.dropdown.themes.light",
+                                                    )
+                                                }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                @click="
+                                                    handleChangeTheme('cupcake')
+                                                "
+                                            >
+                                                {{
+                                                    t(
+                                                        "dashboard.dropdown.themes.cupcake",
+                                                    )
+                                                }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </li>
+
+                            <!-- Language Menu -->
+                            <li>
+                                <details>
+                                    <summary class="flex justify-between">
+                                        <span>{{
+                                            t("dashboard.dropdown.language") ||
+                                            "Language"
+                                        }}</span>
+                                    </summary>
+                                    <ul class="p-2">
+                                        <li
+                                            v-for="language in availableLocales"
+                                            :key="language"
                                         >
-                                            {{
-                                                t(
-                                                    "dashboard.dropdown.themes.cupcake",
-                                                )
-                                            }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </details>
-                        </li>
+                                            <a
+                                                @click="
+                                                    handleChangeLocale(language)
+                                                "
+                                            >
+                                                {{ language }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </li>
 
-                        <!-- Language Menu -->
-                        <li>
-                            <details>
-                                <summary class="flex justify-between">
+                            <div class="divider my-1"></div>
+
+                            <li>
+                                <a class="flex justify-between">
                                     <span>{{
-                                        t("dashboard.dropdown.language") ||
-                                        "Language"
+                                        t("dashboard.dropdown.profile")
                                     }}</span>
-                                </summary>
-                                <ul class="p-2">
-                                    <li
-                                        v-for="language in availableLocales"
-                                        :key="language"
-                                    >
-                                        <a
-                                            @click="
-                                                handleChangeLocale(language)
-                                            "
-                                        >
-                                            {{ language }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </details>
-                        </li>
+                                    <v-icon name="fa-user-alt" />
+                                </a>
+                            </li>
 
-                        <div class="divider my-1"></div>
-
-                        <li>
-                            <a class="flex justify-between">
-                                <span>{{
-                                    t("dashboard.dropdown.profile")
-                                }}</span>
-                                <v-icon name="fa-user-alt" />
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                class="flex justify-between"
-                                @click="handleLogout"
-                            >
-                                <span>{{
-                                    t("dashboard.dropdown.logout")
-                                }}</span>
-                                <v-icon name="md-logout-round" />
-                            </a>
-                        </li>
-                    </ul>
+                            <li>
+                                <a
+                                    class="flex justify-between"
+                                    @click="handleLogout"
+                                >
+                                    <span>{{
+                                        t("dashboard.dropdown.logout")
+                                    }}</span>
+                                    <v-icon name="md-logout-round" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
