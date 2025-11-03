@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { signOut, useSession } from "../lib/auth-client.ts";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import AddWorkspaceModal from "./AddWorkspaceModal.vue";
 
 const { t, availableLocales, locale } = useI18n();
 const session = useSession();
@@ -62,10 +63,7 @@ const handleLogout = async () => {
                 </div>
                 <!--  Drawer bottom   -->
                 <div class="flex flex-col gap-2">
-                    <div class="btn btn-primary w-full flex items-center gap-2">
-                        {{ t("button.newWorkspace") }}
-                        <v-icon name="fa-plus" />
-                    </div>
+                    <AddWorkspaceModal />
                     <div
                         v-if="session && session.data"
                         class="dropdown dropdown-top dropdown-end w-full"
@@ -73,7 +71,7 @@ const handleLogout = async () => {
                         <div
                             tabindex="0"
                             role="button"
-                            class="btn m-1 w-full flex gap-2 justify-between"
+                            class="btn w-full flex gap-2 justify-between"
                         >
                             <div class="flex gap-2 items-center">
                                 <div class="avatar">
