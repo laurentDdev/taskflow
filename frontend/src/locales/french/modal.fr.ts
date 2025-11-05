@@ -6,6 +6,7 @@ const ModalLocaleFr = {
         name: "Ex: Nom de l'espace de travail",
         description: "Ex: Description de l'espace de travail",
         confirm: "Créer l'espace de travail",
+        success: 'Espace de travail créé avec succès',
         errors: {
           name: {
             required: "Le nom est requis",

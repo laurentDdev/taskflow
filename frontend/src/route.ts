@@ -12,6 +12,10 @@ const routes = [
         path: "",
         component: () => import("./views/dashboard/DashboardView.vue"),
       },
+      {
+        path: "/workspace/:workspaceId",
+        component: () => import("./views/workspace/WorkspaceView.vue")
+      }
     ],
   },
   {

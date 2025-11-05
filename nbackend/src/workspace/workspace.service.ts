@@ -93,7 +93,11 @@ export class WorkspaceService {
         },
       },
       include: {
-        WorkspaceMember: true,
+        WorkspaceMember: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }

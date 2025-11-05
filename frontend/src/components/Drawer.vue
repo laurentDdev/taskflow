@@ -4,6 +4,13 @@ import { signOut, useSession } from "../lib/auth-client.ts";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import AddWorkspaceModal from "./AddWorkspaceModal.vue";
+import type {Workspace} from "../types/workspace";
+
+
+
+defineProps<{
+  workspaces: Workspace[];
+}>()
 
 const { t, availableLocales, locale } = useI18n();
 const session = useSession();
@@ -31,9 +38,9 @@ const handleLogout = async () => {
 </script>
 
 <template>
-    <div class="drawer lg:drawer-open lg:max-w-max">
+    <div class="drawer lg:drawer-open lg:max-w-max ">
         <input id="my-drawer-1" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content">
+        <div class="drawer-content h-full ">
             <!-- Page content here -->
             <label
                 for="my-drawer-1"
@@ -42,7 +49,7 @@ const handleLogout = async () => {
                 <v-icon name="fc-menu" />
             </label>
         </div>
-        <div class="drawer-side">
+        <div class="drawer-side max-h-full">
             <label
                 for="my-drawer-1"
                 aria-label="close sidebar"
@@ -59,8 +66,16 @@ const handleLogout = async () => {
                     </div>
                 </div>
                 <!-- Ul for list workspaces  -->
-                <div class="menu flex-1 w-full">
-                    <ul></ul>
+                <div class="menu flex-1 w-full overflow-y-scroll max-h-screen">
+                    <ul class="flex flex-col gap-2">
+                      <li v-for="workspace in workspaces">
+                        <RouterLink :to="`/workspace/${workspace.id}`" >
+                          <img v-if="workspace.logo" :src="workspace.logo" alt="">
+                          <v-icon v-else name="fa-folder-minus" />
+                          {{ workspace.name }}
+                        </RouterLink>
+                      </li>
+                    </ul>
                 </div>
                 <!--  Drawer bottom   -->
                 <div class="flex flex-col gap-2">

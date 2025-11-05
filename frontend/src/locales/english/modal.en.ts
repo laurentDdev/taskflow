@@ -6,6 +6,7 @@ const ModalLocaleEn = {
         name: "Ex: Workspace Name",
         description: "Ex: Workspace Description",
         confirm: "Create Workspace",
+        success: "Workspace created successfully",
         errors: {
           name: {
             required: "The name is required",

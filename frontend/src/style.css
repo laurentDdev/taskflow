@@ -3,8 +3,14 @@
     themes: light --default, dark --prefersdark, cupcake;
 }
 
+html,
+body,
+#app {
+    height: 100%;
+}
+
+
 *, ::before, ::after {
-    box-sizing: border-box;
     font-family: 'Inter', sans-serif;
 }
 
@@ -12,6 +18,3 @@
     --backgroundColor: #ECF0F1;
 }
 
-body {
-    min-height: 100vh;
-}

@@ -23,7 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="min-h-screen">
+  <main>
     <router-view/>
   </main>
 </template>
